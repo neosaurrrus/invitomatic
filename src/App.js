@@ -1,25 +1,25 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
+   state = {
+     inviteURL: null,
+     inviteDates:{}
+   };
+
+  componentDidMount() {
+    this.setState({inviteURL: this.props.location.pathname})
+  }
+  
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+        <h1>Invitomatic</h1>
         </header>
+        <h2>Hey wants to EVENT.</h2>
+        <h3>So, when are you free?</h3>
+        <h4> Share this with others: http://invitomatic.com{this.props.location.pathname}</h4> 
       </div>
     );
   }
