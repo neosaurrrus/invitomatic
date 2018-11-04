@@ -17,14 +17,14 @@ class Landing extends React.Component {
                 <h1>Invitomatic</h1>
             </header>
             <form className="invite-selector" onSubmit={this.goToInvite}>
-                <h2>Find time for Good times.</h2>
+                <h2>Make time for Good Times.</h2>
                 <h3>My name is... </h3>
                 <input type = "text" ref = {this.nameInput} required placeholder = "your name" defaultValue = "anon"/>
-                < h3 > I want to... </h3>
+                <h3> I want to... </h3>
                 <input type= "text" ref={this.inviteInput} required placeholder="do something"  defaultValue = "something"/>
-                < h3> On any of these dates... </h3>
+                <h3> On any of these dates... </h3>
                 <p>To be done!</p>
-                <button type="submit">Let's see whats doable! &rarr;</button>
+            <button type="submit">Let's see whats doable! &rarr;</button>
             </form>
         </div>
         )

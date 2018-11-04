@@ -7,12 +7,10 @@ import NotFound from './NotFound'
 const Router = () => ( 
     <BrowserRouter> 
         <Switch>
-            <Route exact path = "/" component = {Landing} /> 
-            <Route path = "/i/:inviteId" component = {App}/> 
+            <Route exact path="/" component={Landing} /> 
+            <Route path="/i/:inviteId" component={App}/> 
             <Route component = {NotFound}/> 
         </Switch> 
     </BrowserRouter>
 )
-
-
 export default Router;
