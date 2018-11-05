@@ -23,6 +23,7 @@ class App extends Component {
     this.setState({inviteURL: this.props.location.pathname})
   }
 
+
   addDay = day => {
     let newDays = this.state.days
     newDays.push(day)
