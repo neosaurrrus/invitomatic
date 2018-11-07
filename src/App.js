@@ -50,8 +50,15 @@ class App extends Component {
           <header className="App-header">
           <h1>Invitomatic</h1>
           </header>
-          <h2>Hey wants to EVENT.</h2>
-          <h3>So, when are you free?</h3>
+          <section>
+            <h2>Hey, PERSON wants to EVENT.</h2>
+            <p>Description goes here</p> 
+            <h3>So far, SOME PEOPLE are coming. Are you up for it?</h3>
+            <input></input><button>Yeah!</button> <button>Nope</button>
+            <p>Cool, this is what everyone else can do, tick off what doesn't work for you</p>
+            <h4> Share this with others: http://invitomatic.com{this.props.location.pathname}</h4> 
+          </section>
+       
           <Calendar 
             addDay={this.addDay}
             addMonth={this.addMonth}
@@ -60,7 +67,7 @@ class App extends Component {
             daysOfWeek={this.state.daysOfWeek}
             toggleDoable={this.toggleDoable}
             />
-          <h4> Share this with others: http://invitomatic.com{this.props.location.pathname}</h4> 
+
         </div>
       );
     }

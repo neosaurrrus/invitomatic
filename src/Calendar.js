@@ -7,34 +7,31 @@ import Day from './Day';
 
 class Calendar extends React.Component {
 
-    state = {
-        blankCount: 0
-    }
-    postDates = event => {
-        event.preventDefault();
-        console.log("this would submit the dates if I had implemented this")
-     }
-
+  
+  
    
 
-     calcBlanks(dayName){
-         console.log("calcBlanks" + dayName )
-         this.state.blankCount = 0
+     calcBlanks(dayName, modifier){
+        let shift = modifier;
          this.props.daysOfWeek.forEach((day,index) => {
              if (day === dayName ){
-                this.state.blankCount = index
+                shift += index
              }
          })
-        console.log(this.state.blankCount)   
+         return shift;
      }
    
-     insertBlank(){
-        console.log("insertblank" + this.state.blankCount)
+     insertBlanksFirst(dayElement, index, shift){
         let blanks = []
-        for(let i=0;i<this.state.blankCount;i++){
+        for(let i=0;i<shift;i++){
             blanks.push(<div></div>)
         } 
-        console.log(blanks)
+        blanks.push(<Day day={dayElement}
+            key={dayElement._d}
+            dayIndex={index}
+            toggleDoable={this.props.toggleDoable}
+            daysOfWeek = {this.props.daysOfWeek}
+        />)
         return blanks;
      }
 
@@ -42,7 +39,7 @@ class Calendar extends React.Component {
         if (this.props.days.length === 0){
             let upcomingMonths = [];
             const upcomingDays = [];
-            const daysAhead = 74;
+            const daysAhead = 80;
             //Make the days
             for (let i = 1; i < daysAhead; i++) {
                  upcomingDays.push(moment().add(i, "days"));
@@ -91,11 +88,13 @@ class Calendar extends React.Component {
                             {this.props.days.map((dayElement, index)=> {
                             
                             if(dayElement.dayMonth===month){
-                                if(index === 0 ||dayElement.dayNumber === "01" && dayElement.dayName !== "Monday" ){
-                                  console.log(month + index)
-                                   this.calcBlanks(this.props.days[index].dayName)
-                                   index=index-1;
-                                   return this.insertBlank();
+                                
+                                if (index === 0) {
+                                    return this.insertBlanksFirst(dayElement, index, this.calcBlanks(this.props.days[0].dayName, 0))
+                                }
+
+                                if (dayElement.dayNumber === "01" && dayElement.dayName !== "Monday") {
+                                   return this.insertBlanksFirst(dayElement, index, this.calcBlanks(this.props.days[index - 1].dayName, 1));
                                 }
                                 return <Day day={dayElement}
                                         key={dayElement._d}
