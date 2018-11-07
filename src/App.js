@@ -1,9 +1,11 @@
 /*
 ToDO 
 Set up Firebase Integration.
-Format the calendar 
-Name and Event Proper Capture
-
+Input Formatting
+Overall formatting.
+Refactoring/Comments
+Build!
+Host!
 */
 
 
@@ -14,13 +16,21 @@ import Calendar from './Calendar';
 class App extends Component {
    state = {
      inviteURL: null,
+     author: null,
+     event: null,
      days: [],
      months: [],
+     numberOfDays: 90,
      daysOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
    }
 
   componentDidMount() {
-    this.setState({inviteURL: this.props.location.pathname})
+    this.setState({
+      inviteURL: this.props.location.pathname,
+      author: this.props.history.author,
+      event: this.props.history.event,
+    })
+
   }
 
 
@@ -49,14 +59,13 @@ class App extends Component {
         <div className="App">
           <header className="App-header">
           <h1>Invitomatic</h1>
+          <h4> http://invitomatic.com{this.props.location.pathname}</h4>
           </header>
           <section>
-            <h2>Hey, PERSON wants to EVENT.</h2>
-            <p>Description goes here</p> 
-            <h3>So far, SOME PEOPLE are coming. Are you up for it?</h3>
-            <input></input><button>Yeah!</button> <button>Nope</button>
-            <p>Cool, this is what everyone else can do, tick off what doesn't work for you</p>
-            <h4> Share this with others: http://invitomatic.com{this.props.location.pathname}</h4> 
+            <h2>Hey, {this.state.author} wants to {this.state.event}.</h2>
+            <h3>Do you want in?</h3> 
+            <button>Yeah!</button>
+            <button>Nah!</button>
           </section>
        
           <Calendar 
@@ -66,8 +75,8 @@ class App extends Component {
             months={this.state.months} 
             daysOfWeek={this.state.daysOfWeek}
             toggleDoable={this.toggleDoable}
+            numberOfDays={this.state.numberOfDays}
             />
-
         </div>
       );
     }

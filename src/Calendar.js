@@ -39,7 +39,7 @@ class Calendar extends React.Component {
         if (this.props.days.length === 0){
             let upcomingMonths = [];
             const upcomingDays = [];
-            const daysAhead = 80;
+            const daysAhead = this.props.numberOfDays;
             //Make the days
             for (let i = 1; i < daysAhead; i++) {
                  upcomingDays.push(moment().add(i, "days"));
@@ -70,25 +70,22 @@ class Calendar extends React.Component {
     render = () => {
         return (
         <div className="App">
-
+               <h3> Yay! </h3>
+               <strong>These are the dates PEOPLE can do. Remove the dates you can't make.</strong>
                 {this.props.months.map((month, index) =>{
-            
                     return (
                         <div className="calendar_calendarBox">
                             <div key={this.props.months[index]} className="calendar_monthTitle">{this.props.months[index]}</div>
-                            <div>Mon</div>
-                            <div>Tue</div>
-                            <div>Wed</div>
-                            <div>Thu</div>
-                            <div>Fri</div>
-                            <div>Sat</div>
-                            <div>Sun</div>
-                           
-
-                            {this.props.days.map((dayElement, index)=> {
-                            
+                            <div key={this.props.daysOfWeek[0]}>Mon</div>
+                            <div key={this.props.daysOfWeek[1]}>Tue</div>
+                            <div key={this.props.daysOfWeek[2]}>Wed</div>
+                            <div key={this.props.daysOfWeek[3]}>Thu</div>
+                            <div key={this.props.daysOfWeek[4]}>Fri</div>
+                            <div key={this.props.daysOfWeek[5]}>Sat</div>
+                            <div key={this.props.daysOfWeek[6]}>Sun</div>
+                            {this.props.days.map((dayElement, index) => {
                             if(dayElement.dayMonth===month){
-                                
+
                                 if (index === 0) {
                                     return this.insertBlanksFirst(dayElement, index, this.calcBlanks(this.props.days[0].dayName, 0))
                                 }
