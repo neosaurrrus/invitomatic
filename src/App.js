@@ -10,47 +10,51 @@ Host!
 
 
 import React, { Component } from 'react';
+import base from "./base"
 import './App.css';
 import Calendar from './Calendar';
 
 class App extends Component {
    state = {
-     inviteURL: null,
-     author: null,
-     event: null,
-     days: [],
-     months: [],
-     numberOfDays: 90,
+     event: {
+        inviteURL: this.props.location.pathname,
+        author: this.props.history.author,
+        name: this.props.history.event,
+        days: [],
+        months: [],
+        numberOfDays: 90,
+     },
      daysOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
    }
 
   componentDidMount() {
-    this.setState({
-      inviteURL: this.props.location.pathname,
-      author: this.props.history.author,
-      event: this.props.history.event,
-    })
-
+    const {params} = this.props.match;
+    this.ref=base.syncState(`${this.props.location.pathname}/event`, {
+      contect: this,
+      state: "event"
+    });
   }
 
 
   addDay = day => {
-    let newDays = this.state.days
+    let newEvent = this.state.event
+    let newDays = newEvent.days;
     newDays.push(day)
-    this.setState({days: newDays});
+    this.setState({event: newEvent});
   }
 
   addMonth = upcomingMonths => {
-    this.setState({
-      months: upcomingMonths
-    });
+    let newEvent = this.state.event
+    newEvent.months = upcomingMonths;
+    this.setState({event:newEvent});
   }
 
  toggleDoable = (index) => {
-   console.log(index)
-   let newDays = this.state.days
+   let newEvent = this.state.event
+
+   let newDays = newEvent.days
    newDays[index].doable=!newDays[index].doable;
-   this.setState({days: newDays})
+   this.setState({event: newEvent})
  }
 
 
@@ -62,7 +66,7 @@ class App extends Component {
           <h4> http://invitomatic.com{this.props.location.pathname}</h4>
           </header>
           <section>
-            <h2>Hey, {this.state.author} wants to {this.state.event}.</h2>
+            <h2>Hey, {this.state.event.author} wants to {this.state.event.name}.</h2>
             <h3>Do you want in?</h3> 
             <button>Yeah!</button>
             <button>Nah!</button>
@@ -71,11 +75,11 @@ class App extends Component {
           <Calendar 
             addDay={this.addDay}
             addMonth={this.addMonth}
-            days={this.state.days} 
-            months={this.state.months} 
-            daysOfWeek={this.state.daysOfWeek}
+            days={this.state.event.days} 
+            months={this.state.event.months} 
+            daysOfWeek={this.state.event.daysOfWeek}
             toggleDoable={this.toggleDoable}
-            numberOfDays={this.state.numberOfDays}
+            numberOfDays={this.state.event.numberOfDays}
             />
         </div>
       );
