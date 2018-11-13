@@ -5,7 +5,6 @@ class Day extends React.Component {
 
      dayButtonEvent = (event) => {
          event.preventDefault();
-         console.log(this.props)
          this.props.toggleDoable(this.props.dayIndex) 
          event.currentTarget.classList.toggle("day_doable");
      }

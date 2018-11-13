@@ -1,15 +1,17 @@
 import React from 'react';
-import moment from 'moment'
 import './App.css';
 import Day from './Day';
 
 
 
 class Calendar extends React.Component {
-
-  
-  
    
+    componentDidUpdate(){
+        console.log(this.props.months)
+        console.log(this.props.days)
+        console.log(this.props.state)
+        console.log("This is the calendar mounting")
+    }
 
      calcBlanks(dayName, modifier){
         let shift = modifier;
@@ -35,39 +37,7 @@ class Calendar extends React.Component {
         return blanks;
      }
 
-    componentDidMount = () => { //Check if days already exist for this event, else create.
-        if (this.props.days.length === 0){
-            let upcomingMonths = [];
-            const upcomingDays = [];
-            const daysAhead = this.props.numberOfDays;
-            //Make the days
-            for (let i = 1; i < daysAhead; i++) {
-                 upcomingDays.push(moment().add(i, "days"));
-            }
-          
-            upcomingDays.forEach((day, index) => {
-                day.doable = false;
-                this.props.addDay(day)
-                day.dayFormat = day.format("dddd DD MMMM");
-                day.dayNumber = day.format("DD");
-                day.dayName = day.format("dddd");
-                day.dayMonth = day.format("MMMM");
-                upcomingMonths.push(day.dayMonth);
-
-            })
-            //build month array by removing dupes from month array.
-            let monthSet = new Set(upcomingMonths)
-            this.props.addMonth([...monthSet]);
-            console.log("Adding days for a new event")
-        } else {
-            console.log("Days already exist")
-        }
-        
-    }
-
-
-
-    render = () => {
+    render() {
         return (
         <div className="App">
                <h3> Yay! </h3>
@@ -75,7 +45,7 @@ class Calendar extends React.Component {
                 {this.props.months.map((month, index) =>{
                     return (
                         <div className="calendar_calendarBox">
-                            <div key={this.props.months[index]} className="calendar_monthTitle">{this.props.months[index]}</div>
+                            <div key={this.props.months[index]} className="calendar_monthTitle">{month}</div>
                             <div key={this.props.daysOfWeek[0]}>Mon</div>
                             <div key={this.props.daysOfWeek[1]}>Tue</div>
                             <div key={this.props.daysOfWeek[2]}>Wed</div>
@@ -83,13 +53,13 @@ class Calendar extends React.Component {
                             <div key={this.props.daysOfWeek[4]}>Fri</div>
                             <div key={this.props.daysOfWeek[5]}>Sat</div>
                             <div key={this.props.daysOfWeek[6]}>Sun</div>
-                            {this.props.days.map((dayElement, index) => {
-                            if(dayElement.dayMonth===month){
 
+                            {this.props.days.map((dayElement, index) => {
+                             {console.log(month + " arr  day " +  dayElement.dayMonth)}
+                            if(dayElement.dayMonth===month){
                                 if (index === 0) {
                                     return this.insertBlanksFirst(dayElement, index, this.calcBlanks(this.props.days[0].dayName, 0))
                                 }
-
                                 if (dayElement.dayNumber === "01" && dayElement.dayName !== "Monday") {
                                    return this.insertBlanksFirst(dayElement, index, this.calcBlanks(this.props.days[index - 1].dayName, 1));
                                 }
@@ -101,7 +71,7 @@ class Calendar extends React.Component {
                                     />
                                 }
                             })}
-                      </div>) 
+                        </div>) 
                     })}
         </div>
         )
