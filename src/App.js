@@ -16,55 +16,35 @@ import Calendar from './Calendar';
 import moment from 'moment'
 
 class App extends Component {
-   state = {
-     event: {},
-     test: {},
-     daysOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-   }
+  state = {
+    event: {},
+    daysOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+  }
 
-      componentDidMount(){ 
-       if(!this.state.event.inviteId) this.buildInitialState(); 
-        //  this.ref = base.syncState(`${this.props.match.params.inviteId}/event`, {
-        //    context: this,
-        //    state: "event"
-        //  });
-    
-        if (this.state.event.days.length<6) {
-          let upcomingMonths = [];
-          const upcomingDays = [];
-          const daysAhead = this.state.event.numberOfDays;
-          //Make the days
-          for (let i = 1; i < daysAhead; i++) {
-            upcomingDays.push(moment().add(i, "days"));
-          }
-          let formattedDays = upcomingDays.map((day) => {
-            let newDay = {}
-            newDay.doable = false;
-            newDay.dayFormat = day.format("dddd DD MMMM");
-            newDay.dayNumber = day.format("DD");
-            newDay.dayName = day.format("dddd");
-            newDay.dayMonth = day.format("MMMM");
-            upcomingMonths.push(newDay.dayMonth);
-            return newDay
-          })
-          this.addDays(formattedDays);
+  componentDidMount(){ 
+    this.syncDB();
+    if(!this.state.event.inviteId){
+      console.log("Building initial state")
+      this.buildInitialState()
+    } else {
+      console.log("This event already exists")
+    } 
 
-          //build month array by removing dupes from month array.
-          let monthSet = new Set(upcomingMonths)
-          this.addMonth([...monthSet]);
-          console.log("Adding days for a new event")
-        } else {
-          console.log("Days already exist")
-        }
-        
-      }
+  }
   
+      syncDB(){
+         this.ref = base.syncState(`${this.props.match.params.inviteId}/event`, {
+           context: this,
+           state: "event"
+         });
+      }
+  //NOW lets make the DAYS and MONTHS JUST Once here....
   buildInitialState() {
     let firstState = this.state
     firstState.event = {
       inviteID: this.props.match.params.inviteId,
-      // author: this.props.history.author,
-      // name: this.props.history.event,
+      author: "Lukie",
+      name: "blah blah",
       days: [],
       months: [],
       numberOfDays: 90
@@ -72,6 +52,31 @@ class App extends Component {
     this.setState({event: firstState.event});
     console.log("build State")
     console.log(this.state)
+
+    if (this.state.event.days.length < 6) {
+      let upcomingMonths = [];
+      const upcomingDays = [];
+      const daysAhead = this.state.event.numberOfDays;
+      //Make the days
+      for (let i = 1; i < daysAhead; i++) {
+        upcomingDays.push(moment().add(i, "days"));
+      }
+      let formattedDays = upcomingDays.map((day) => {
+        let newDay = {}
+        newDay.doable = false;
+        newDay.dayFormat = day.format("dddd DD MMMM");
+        newDay.dayNumber = day.format("DD");
+        newDay.dayName = day.format("dddd");
+        newDay.dayMonth = day.format("MMMM");
+        upcomingMonths.push(newDay.dayMonth);
+        return newDay
+      })
+      this.addDays(formattedDays);
+
+      //build month array by removing dupes from month array.
+      let monthSet = new Set(upcomingMonths)
+      this.addMonth([...monthSet]);
+    };
   };
 
   componentWillUnmount() {
