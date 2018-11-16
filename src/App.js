@@ -17,21 +17,19 @@ import moment from 'moment'
 
 class App extends Component {
    state = {
-     event: {
-        inviteURL: this.props.location.pathname,
-        author: this.props.history.author,
-        name: this.props.history.event,
-        days: [],
-        months: [],
-        numberOfDays: 90,
-     },
+     event: {},
+     test: {},
      daysOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
    }
 
-      componentDidMount(){ //Check if days already exist for this event, else create.
-        console.log(this.props)
-        console.log("This is the app mounting")
-        if (this.state.event.days.length === 0) {
+      componentDidMount(){ 
+       if(!this.state.event.inviteId) this.buildInitialState(); 
+        //  this.ref = base.syncState(`${this.props.match.params.inviteId}/event`, {
+        //    context: this,
+        //    state: "event"
+        //  });
+    
+        if (this.state.event.days.length<6) {
           let upcomingMonths = [];
           const upcomingDays = [];
           const daysAhead = this.state.event.numberOfDays;
@@ -39,17 +37,18 @@ class App extends Component {
           for (let i = 1; i < daysAhead; i++) {
             upcomingDays.push(moment().add(i, "days"));
           }
-
-          upcomingDays.forEach((day, index) => {
-            day.doable = false;
-            this.addDay(day)
-            day.dayFormat = day.format("dddd DD MMMM");
-            day.dayNumber = day.format("DD");
-            day.dayName = day.format("dddd");
-            day.dayMonth = day.format("MMMM");
-            upcomingMonths.push(day.dayMonth);
-
+          let formattedDays = upcomingDays.map((day) => {
+            let newDay = {}
+            newDay.doable = false;
+            newDay.dayFormat = day.format("dddd DD MMMM");
+            newDay.dayNumber = day.format("DD");
+            newDay.dayName = day.format("dddd");
+            newDay.dayMonth = day.format("MMMM");
+            upcomingMonths.push(newDay.dayMonth);
+            return newDay
           })
+          this.addDays(formattedDays);
+
           //build month array by removing dupes from month array.
           let monthSet = new Set(upcomingMonths)
           this.addMonth([...monthSet]);
@@ -58,22 +57,34 @@ class App extends Component {
           console.log("Days already exist")
         }
         
-        // this.ref = base.syncState(`${Date.now()}/event`, {
-        //   context: this,
-        //   state: "event"
-        // });
       }
+  
+  buildInitialState() {
+    let firstState = this.state
+    firstState.event = {
+      inviteID: this.props.match.params.inviteId,
+      // author: this.props.history.author,
+      // name: this.props.history.event,
+      days: [],
+      months: [],
+      numberOfDays: 90
+    };
+    this.setState({event: firstState.event});
+    console.log("build State")
+    console.log(this.state)
+  };
 
-componentWillUnmount() {
-  base.removeBinding(this.ref);
-}
+  componentWillUnmount() {
+    base.removeBinding(this.ref);
+  }
 
   
-  addDay = day => {
-    let newEvent = this.state.event
-    let newDays = newEvent.days;
-    newDays.push(day)
-    this.setState({event: newEvent});
+  addDays = (daysObj) => {
+    let newStateEvent = this.state.event
+    console.log(this.state)
+    newStateEvent.days = daysObj;
+    console.log(newStateEvent)
+    this.setState({event: newStateEvent});
   }
 
   addMonth = upcomingMonths => {
@@ -89,6 +100,15 @@ componentWillUnmount() {
    this.setState({event: newEvent})
  }
 
+  buttonYesEvent = (event) => {
+    console.log("YES worked");
+    let newEvent = this.state.event;
+    console.log(newEvent.numberOfDays);
+    newEvent.numberOfDays++;
+    this.setState({event: newEvent});
+    
+  }
+
 
   render() {
       return (
@@ -98,12 +118,11 @@ componentWillUnmount() {
           <h4> http://invitomatic.com{this.props.location.pathname}</h4>
           </header>
           <section>
-            <h2>Hey, {this.state.event.author} wants to {this.state.event.name}.</h2>
+            <h2>{this.state.event.numberOfDays} Hey, {this.state.event.author} wants to {this.state.event.name}.</h2>
             <h3>Do you want in?</h3> 
-            <button>Yeah!</button>
+            <button onClick={this.buttonYesEvent}> Yeah!</button>
             <button>Nah!</button>
           </section>
-       
           <Calendar 
             toggleDoable={this.toggleDoable}
             state={this.state}
@@ -111,7 +130,7 @@ componentWillUnmount() {
             months={this.state.event.months} 
             numberOfDays={this.state.event.numberOfDays}
             daysOfWeek={this.state.daysOfWeek}
-            />
+          />
         </div>
       );
     }

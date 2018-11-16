@@ -6,11 +6,9 @@ class Landing extends React.Component {
     nameInput = React.createRef();
     goToInvite = event => {
         event.preventDefault();
-        const inviteName = this.inviteInput.current.value;
-        const yourName = this.nameInput.current.value;
-        this.props.history.author = yourName;
-        this.props.history.event = inviteName;
-        this.props.history.push(`/i/${yourName}-${inviteName}-${Date.now()}`);
+        this.props.history.author = this.nameInput.current.value;
+        this.props.history.event = this.inviteInput.current.value;
+        this.props.history.push(`/i/${this.props.history.author}-${this.props.history.event}-${Date.now()}`);
     }
     render(){
         return (
