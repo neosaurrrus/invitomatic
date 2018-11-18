@@ -14,7 +14,7 @@ Host!
 import React, { Component } from 'react';
 import {Redirect} from 'react-router-dom'
 
-import Base from "./base"
+import Base from "./Base"
 
 import './App.css';
 import Calendar from './Calendar';
@@ -42,7 +42,7 @@ class App extends Component {
 
   }
   
-  checkValid(){ //Checks to see if the url has a valid event. 
+  checkValid(){ //Checks the state that is on the DB for this URL
     console.log(this.state)
     console.log("checkvalid")
     if (!this.state.event.name){
@@ -50,7 +50,7 @@ class App extends Component {
     }
   }
   
-  syncDB(){  //Sets up rebase sync
+  syncDB(){  //Sets up rebase sync and calls for a check on what it gets.
       this.ref = Base.syncState(`${this.props.match.params.inviteId}/event`, {
         context: this,
         state: "event"
@@ -61,7 +61,6 @@ class App extends Component {
   //NOW lets make the DAYS and MONTHS JUST Once here....
   buildInitialState() {
     console.log(this.state.days)
-    if (this.state.days) {
       let firstState = this.state
       firstState.event = {
         inviteID: this.props.match.params.inviteId,
@@ -100,7 +99,6 @@ class App extends Component {
         this.addMonth([...monthSet]);
       };
     };
-    }
   componentWillUnmount() {
     Base.removeBinding(this.ref);
   }
