@@ -1,6 +1,8 @@
 /*
 ToDO 
-Set up Firebase Integration.
+Set up Firebase Integration - DONE
+
+
 Input Formatting
 Overall formatting.
 Refactoring/Comments
@@ -10,7 +12,10 @@ Host!
 
 
 import React, { Component } from 'react';
-import base from "./base"
+import {Redirect} from 'react-router-dom'
+
+import Base from "./base"
+
 import './App.css';
 import Calendar from './Calendar';
 import moment from 'moment'
@@ -22,65 +27,82 @@ class App extends Component {
   }
 
   componentDidMount(){ 
+    console.log(this.props);
+  
     this.syncDB();
-    if(!this.state.event.inviteId){
+
+    
+
+    if(!this.state.event.days){
       console.log("Building initial state")
-      this.buildInitialState()
+          this.buildInitialState()
     } else {
       console.log("This event already exists")
     } 
 
   }
   
-      syncDB(){
-         this.ref = base.syncState(`${this.props.match.params.inviteId}/event`, {
-           context: this,
-           state: "event"
-         });
-      }
+  checkValid(){ //Checks to see if the url has a valid event. 
+    console.log(this.state)
+    console.log("checkvalid")
+    if (!this.state.event.name){
+      this.props.history.push("/");
+    }
+  }
+  
+  syncDB(){  //Sets up rebase sync
+      this.ref = Base.syncState(`${this.props.match.params.inviteId}/event`, {
+        context: this,
+        state: "event"
+      });
+      this.checkValid();
+  }
+
   //NOW lets make the DAYS and MONTHS JUST Once here....
   buildInitialState() {
-    let firstState = this.state
-    firstState.event = {
-      inviteID: this.props.match.params.inviteId,
-      author: "Lukie",
-      name: "blah blah",
-      days: [],
-      months: [],
-      numberOfDays: 90
+    console.log(this.state.days)
+    if (this.state.days) {
+      let firstState = this.state
+      firstState.event = {
+        inviteID: this.props.match.params.inviteId,
+        author: this.props.location.state.author,
+        name: this.props.location.state.name,
+        days: [],
+        months: [],
+        numberOfDays: 90
+      };
+      this.setState({event: firstState.event});
+      console.log("build State")
+      console.log(this.state)
+
+      if (this.state.event.days.length < 6) {
+        let upcomingMonths = [];
+        const upcomingDays = [];
+        const daysAhead = this.state.event.numberOfDays;
+        //Make the days
+        for (let i = 1; i < daysAhead; i++) {
+          upcomingDays.push(moment().add(i, "days"));
+        }
+        let formattedDays = upcomingDays.map((day) => {
+          let newDay = {}
+          newDay.doable = false;
+          newDay.dayFormat = day.format("dddd DD MMMM");
+          newDay.dayNumber = day.format("DD");
+          newDay.dayName = day.format("dddd");
+          newDay.dayMonth = day.format("MMMM");
+          upcomingMonths.push(newDay.dayMonth);
+          return newDay
+        })
+        this.addDays(formattedDays);
+
+        //build month array by removing dupes from month array.
+        let monthSet = new Set(upcomingMonths)
+        this.addMonth([...monthSet]);
+      };
     };
-    this.setState({event: firstState.event});
-    console.log("build State")
-    console.log(this.state)
-
-    if (this.state.event.days.length < 6) {
-      let upcomingMonths = [];
-      const upcomingDays = [];
-      const daysAhead = this.state.event.numberOfDays;
-      //Make the days
-      for (let i = 1; i < daysAhead; i++) {
-        upcomingDays.push(moment().add(i, "days"));
-      }
-      let formattedDays = upcomingDays.map((day) => {
-        let newDay = {}
-        newDay.doable = false;
-        newDay.dayFormat = day.format("dddd DD MMMM");
-        newDay.dayNumber = day.format("DD");
-        newDay.dayName = day.format("dddd");
-        newDay.dayMonth = day.format("MMMM");
-        upcomingMonths.push(newDay.dayMonth);
-        return newDay
-      })
-      this.addDays(formattedDays);
-
-      //build month array by removing dupes from month array.
-      let monthSet = new Set(upcomingMonths)
-      this.addMonth([...monthSet]);
-    };
-  };
-
+    }
   componentWillUnmount() {
-    base.removeBinding(this.ref);
+    Base.removeBinding(this.ref);
   }
 
   
