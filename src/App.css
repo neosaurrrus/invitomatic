@@ -3,6 +3,8 @@
   --notdoable: rgb(75, 75, 75);
   --blackground: #282c34;
   --offWhite: rgb(240,240,240);
+  --semiTransparent: rgba(0,0,0,0.1);
+  font-size: 18px;
 }
 .App {
   text-align: center;
@@ -19,7 +21,23 @@
   color: var(--offWhite);
 }
 
+.landing_section{
+  font-size: 1.3rem;
+}
+.landing_input{
+  background: var(--semiTransparent);
+  border: 0px;
+  font-size: 2rem;
+  text-align: center;
+  min-width: 60px;
+}
 
+.landing_button {
+  background: var(--semiTransparent);
+  border: 3px solid var(--blackground);
+  font-size: 1.5rem;
+  padding: 10px;
+}
 .calendar_calendarBox{
   display:grid;
   grid-template-columns: repeat(7, 12%);
@@ -59,3 +77,4 @@
 .day_doable{
   background: green;
 }
+

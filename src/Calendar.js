@@ -6,7 +6,7 @@ import Day from './Day';
 class Calendar extends React.Component {
    
     componentDidUpdate(){
-        console.log("This is the calendar mounting")
+
     }
 
      
@@ -31,7 +31,7 @@ class Calendar extends React.Component {
     }
 
     calcDays(month){
-        let days =  this.props.days.map((dayElement, index) => {
+        let days =  this.props.days.map((dayElement, index)=>{
             if(dayElement.dayMonth===month){
                 if (index === 0) {
                     return this.insertBlanksFirst(dayElement, index, this.calcBlanks(this.props.days[0].dayName, 0))
@@ -46,6 +46,7 @@ class Calendar extends React.Component {
                         daysOfWeek = {this.props.daysOfWeek}
                     />)
             }
+            return
         })
         return days;
     }

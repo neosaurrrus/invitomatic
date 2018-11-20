@@ -12,111 +12,106 @@ Host!
 
 
 import React, { Component } from 'react';
-import {Redirect} from 'react-router-dom'
-
 import Base from "./Base"
-
-import './App.css';
 import Calendar from './Calendar';
 import moment from 'moment'
+import './App.css';
 
 class App extends Component {
   state = {
     event: {},
-    daysOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    daysOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    loading: true
   }
 
-  componentDidMount(){ 
-    console.log(this.props);
-  
+
+  componentDidMount(){
     this.syncDB();
-
-    
-
-    if(!this.state.event.days){
-      console.log("Building initial state")
-          this.buildInitialState()
-    } else {
-      console.log("This event already exists")
-    } 
-
   }
-  
-  checkValid(){ //Checks the state that is on the DB for this URL
-    console.log(this.state)
-    console.log("checkvalid")
-    if (!this.state.event.name){
-      this.props.history.push("/");
-    }
-  }
-  
-  syncDB(){  //Sets up rebase sync and calls for a check on what it gets.
-      this.ref = Base.syncState(`${this.props.match.params.inviteId}/event`, {
-        context: this,
-        state: "event"
-      });
-      this.checkValid();
+  componentDidUpdate(){
+    if(!this.state.loading){this.checkValid()}
   }
 
-  //NOW lets make the DAYS and MONTHS JUST Once here....
-  buildInitialState() {
-    console.log(this.state.days)
-      let firstState = this.state
-      firstState.event = {
-        inviteID: this.props.match.params.inviteId,
-        author: this.props.location.state.author,
-        name: this.props.location.state.name,
-        days: [],
-        months: [],
-        numberOfDays: 90
-      };
-      this.setState({event: firstState.event});
-      console.log("build State")
-      console.log(this.state)
-
-      if (this.state.event.days.length < 6) {
-        let upcomingMonths = [];
-        const upcomingDays = [];
-        const daysAhead = this.state.event.numberOfDays;
-        //Make the days
-        for (let i = 1; i < daysAhead; i++) {
-          upcomingDays.push(moment().add(i, "days"));
-        }
-        let formattedDays = upcomingDays.map((day) => {
-          let newDay = {}
-          newDay.doable = false;
-          newDay.dayFormat = day.format("dddd DD MMMM");
-          newDay.dayNumber = day.format("DD");
-          newDay.dayName = day.format("dddd");
-          newDay.dayMonth = day.format("MMMM");
-          upcomingMonths.push(newDay.dayMonth);
-          return newDay
-        })
-        this.addDays(formattedDays);
-
-        //build month array by removing dupes from month array.
-        let monthSet = new Set(upcomingMonths)
-        this.addMonth([...monthSet]);
-      };
-    };
   componentWillUnmount() {
     Base.removeBinding(this.ref);
   }
 
   
-  addDays = (daysObj) => {
-    let newStateEvent = this.state.event
+ syncDB() { //Sets up rebase sync and calls for a check on what it gets.
+    console.log("Sync DB")
     console.log(this.state)
-    newStateEvent.days = daysObj;
-    console.log(newStateEvent)
-    this.setState({event: newStateEvent});
+   this.ref = Base.syncState(`${this.props.match.params.inviteId}/event`, {
+     context: this,
+     state: "event",
+     then: this.setLoading()
+   });
+ }
+
+  setLoading(){
+      this.setState({loading: false}, () => {console.log("loading set to false")})
   }
 
-  addMonth = upcomingMonths => {
-    let newEvent = this.state.event
-    newEvent.months = upcomingMonths;
-    this.setState({event:newEvent});
+
+  checkValid(){ //Checks the state that is on the DB for this URL
+      console.log("Check Valid")
+      console.log(this.state)
+    if (typeof this.state.event.days === "object" && !this.setLoading) {
+      console.log("Days array already exists, skipping date creation")
+    } else if (!this.state.event.days && !this.setLoading ) {
+       console.log("building new dates")
+       this.buildDates();
+    }
+    if (typeof this.state.event.name === undefined && typeof this.props.location.state === undefined){
+      console.log("name not found in either props or state.")
+      this.props.history.push("/");
+    }
   }
+  
+
+  buildDates() { //builds the event object if empty
+    console.log("Build Dates")
+    console.log(this.state)
+    let newEvent = this.state.event;
+    newEvent.inviteID = this.props.match.params.inviteId
+    newEvent.author = this.props.location.state.author
+    newEvent.name =  this.props.location.state.name
+    newEvent.days = []
+    newEvent.months = []
+    newEvent.numberOfDays = 90;
+    this.buildDays(newEvent)
+    this.setState({event:newEvent})
+  }
+
+  buildDays(newEvent){
+      console.log("Build Days")
+      console.log(this.state)
+    let upcomingMonths = [];
+    const upcomingDays = [];
+    const daysAhead = newEvent.numberOfDays;
+    //Make the days
+    for (let i = 1; i < daysAhead; i++) {
+      upcomingDays.push(moment().add(i, "days"));
+    }
+    let formattedDays = upcomingDays.map((day) => {
+      let newDay = {}
+      newDay.doable = false;
+      newDay.dayFormat = day.format("dddd DD MMMM");
+      newDay.dayNumber = day.format("DD");
+      newDay.dayName = day.format("dddd");
+      newDay.dayMonth = day.format("MMMM");
+      upcomingMonths.push(newDay.dayMonth);
+      return newDay
+    })
+    newEvent.days = formattedDays;
+
+    //build month array by removing dupes from month array.
+    let monthSet = new Set(upcomingMonths)
+    newEvent.months = [...monthSet];
+
+  };
+
+  
+  
 
  toggleDoable = (index) => {
    let newEvent = this.state.event
@@ -127,11 +122,6 @@ class App extends Component {
 
   buttonYesEvent = (event) => {
     console.log("YES worked");
-    let newEvent = this.state.event;
-    console.log(newEvent.numberOfDays);
-    newEvent.numberOfDays++;
-    this.setState({event: newEvent});
-    
   }
 
 
