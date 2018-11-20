@@ -80,10 +80,11 @@ class Calendar extends React.Component {
 
     render() {
         return (
+         
         <div className="App">
-               <h3> Yay! </h3>
-               <strong>These are the dates PEOPLE can do. Remove the dates you can't make.</strong>
-                {this.calcMonths()}
+            <p>Cool, the days everyone else can do are highlighted below, all you need to tick off the ones that are no good for you</p>
+            <br/>
+            {this.calcMonths()}
         </div>)
     }
 }

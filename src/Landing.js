@@ -35,19 +35,21 @@ class Landing extends React.Component {
         <div className="App">
 
             <header className="App-header">
-                <h1>Invitomatic</h1>
-                <h2>Make Time for Good Times.</h2>
+                <h1>make time for good times</h1>
+                <p>a no-fuss site to figure out what dates people can make.</p>
             </header>
             <section className="landing_section">
-                <h3>My name is... </h3>
+                <h2>First off, just two simple questions.</h2>
+                <h3>Your name is: </h3>
                 <input className="landing_input" type= "text" onChange={this.updateAuthor} value={this.state.author}/>
-                <h3> and I want to... </h3>
+                <h3> And you want to: </h3>
                 <input className="landing_input" type= "text" onChange={this.updateName} value={this.state.name}/>
-        
+                <br/>
+                <br/>
                 <Link to={{
                         pathname: `/i/${this.state.author}-${this.state.name}-${Date.now()}`,
                         state: this.state
-                            }}> <button className="landing_button" type="submit">Find the Time &rarr;</button>
+                            }}> <button className="landing_button" type="submit">Pick Some dates &rarr;</button>
                 </Link>
             </section>
             

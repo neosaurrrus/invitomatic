@@ -2,8 +2,8 @@
 ToDO 
 Set up Firebase Integration - DONE
 
-
 Input Formatting
+
 Overall formatting.
 Refactoring/Comments
 Build!
@@ -12,6 +12,7 @@ Host!
 
 
 import React, { Component } from 'react';
+import {Redirect} from 'react-router-dom';
 import Base from "./Base"
 import Calendar from './Calendar';
 import moment from 'moment'
@@ -32,7 +33,6 @@ class App extends Component {
     return true;
   }
   componentDidMount(){
-    this.checkURL()
     console.log(this.props.location)
     this.syncDB();
     console.log(this.state.event)
@@ -50,19 +50,14 @@ class App extends Component {
     Base.removeBinding(this.ref);
   }
 
-  checkURL(){
-    if (typeof this.props.location.state === "undefined") {
-      console.log("name not found in either props or state. Bumping to landing")
-      this.props.history.push("/");
-    }
-  }
+  
 
  syncDB() { //Sets up rebase sync and calls for a check on what it gets.
     console.log("Sync DB")
     console.log(this.state)
    this.ref = Base.syncState(`${this.props.match.params.inviteId}/event`, {
      context: this,
-     defaultValue:{test: "yes"},
+     defaultValue:{failed: true},
      state: "event",
      then: this.setLoaded()
    });
@@ -80,15 +75,26 @@ class App extends Component {
       console.log("Event is empty? " + this.isEmptyObject(this.state.event))
     if (typeof this.state.event.days === "object") {
       console.log("Days array already exists, skipping date creation")
-    } else if (!this.isEmptyObject(this.state.event) && this.setLoaded) {
-       console.log("building new dates")
-       this.buildDates();
+    } else if (this.props.location.state) {
+      console.log("building new dates")
+      this.buildDates();
     }
+    console.error("Cannot deterimine what to do.")
   }
   
+  // checkURL() { //checks to see if this URL contains props normally given by the landing component. IF not redirect to Landing.
+  //   console.log(this.state.event)
+  //   if (this.state.event.failed) {
+  //     console.log("Empty DB Entry for this URL. Bumping to landing")
+  //     this.props.history.push("/");
+  //     // HOW TO HARD REDIRECT AS IT SEEMS TO KEEP GOINg ON
+  //   }
+  // }
 
   buildDates() { //builds the event object if empty
-    
+    console.log("checking that this was a valid URL")
+
+    // this.checkURL()
     console.log("Build Dates")
     console.log(this.state)
     let newEvent = this.state.event;
@@ -98,6 +104,7 @@ class App extends Component {
     newEvent.days = []
     newEvent.months = []
     newEvent.numberOfDays = 90;
+    newEvent.failed = false;
     this.buildDays(newEvent)
     this.setState({event:newEvent})
   }
@@ -141,23 +148,29 @@ class App extends Component {
    this.setState({event: newEvent})
  }
 
-  buttonYesEvent = (event) => {
-    console.log("YES worked");
-  }
 
 
   render() {
+      if (this.state.event.failed && !this.state.event.days && this.state.loaded && !this.props.location.state ) {
+         return <Redirect to='/'/>;
+      }
       return (
+     
         <div className="App">
+
           <header className="App-header">
           <h1>Invitomatic</h1>
           <h4> http://invitomatic.com{this.props.location.pathname}</h4>
           </header>
           <section>
             <h2>Hey, {this.state.event.author} wants to {this.state.event.name}.</h2>
-            <h3>Do you want in?</h3> 
-            <button onClick={this.buttonYesEvent}> Yeah!</button>
-            <button>Nah!</button>
+            <h3>People In: </h3>
+            <h3>People Out:</h3>
+            <h2>So, who are you?</h2> 
+            <input className="landing_input" type= "text"/>
+            <h2>And are you up for it?</h2>
+            <button className="landing_button" type="submit">Yeah!</button> <button className="landing_button" type="submit">Nah..</button>
+  
           </section>
           <Calendar 
             toggleDoable={this.toggleDoable}
