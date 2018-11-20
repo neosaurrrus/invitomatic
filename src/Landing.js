@@ -4,8 +4,9 @@ import './App.css';
 
 class Landing extends React.Component {
     state = {
-        author: null,
-        name: null
+        author: "",
+        name: "",
+        duration: 90
     }
     updateAuthor = event => { //Updates the Author in State
         let newAuthor = event.target.value;
@@ -17,6 +18,13 @@ class Landing extends React.Component {
         let newName = event.target.value;
         this.setState({
             name: newName
+        })
+    }
+    updateDuration = event => { //Updates the event name in State
+        console.log(event)
+        let newDuration = event.target.value;
+        this.setState({
+            duration: newDuration
         })
     }
 
@@ -35,7 +43,7 @@ class Landing extends React.Component {
                 <input className="landing_input" type= "text" onChange={this.updateAuthor} value={this.state.author}/>
                 <h3> and I want to... </h3>
                 <input className="landing_input" type= "text" onChange={this.updateName} value={this.state.name}/>
-                <h3> Within 3 Months </h3>
+        
                 <Link to={{
                         pathname: `/i/${this.state.author}-${this.state.name}-${Date.now()}`,
                         state: this.state
@@ -43,7 +51,6 @@ class Landing extends React.Component {
                 </Link>
             </section>
             
-           
 
         </div>
         )

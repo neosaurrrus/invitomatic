@@ -27,14 +27,16 @@
 .landing_input{
   background: var(--semiTransparent);
   border: 0px;
-  font-size: 2rem;
+  font-size: 1.6rem;
   text-align: center;
   min-width: 60px;
+  margin: 10px;
+  border: 1px solid var(--blackground);
 }
 
 .landing_button {
   background: var(--semiTransparent);
-  border: 3px solid var(--blackground);
+  border: 1px solid var(--blackground);
   font-size: 1.5rem;
   padding: 10px;
 }
@@ -66,7 +68,6 @@
   width: 90%;
   font-size: 0.95rem;
   
-
 }
 .day_dayBox{
   margin: 0 auto;

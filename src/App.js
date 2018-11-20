@@ -21,54 +21,74 @@ class App extends Component {
   state = {
     event: {},
     daysOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-    loading: true
+    loaded: false
   }
 
-
+  isEmptyObject(obj) {
+    let el=""
+    for( el in obj){
+      return false;
+    }
+    return true;
+  }
   componentDidMount(){
+    this.checkURL()
+    console.log(this.props.location)
     this.syncDB();
+    console.log(this.state.event)
+    console.log("does this occur before loading?")
   }
   componentDidUpdate(){
-    if(!this.state.loading){this.checkValid()}
+    if (this.state.loaded && !this.isEmptyObject(this.state.event)) {
+      this.checkValid()
+    } else {
+      console.log("Not Loaded yet")
+    }
   }
 
   componentWillUnmount() {
     Base.removeBinding(this.ref);
   }
 
-  
+  checkURL(){
+    if (typeof this.props.location.state === "undefined") {
+      console.log("name not found in either props or state. Bumping to landing")
+      this.props.history.push("/");
+    }
+  }
+
  syncDB() { //Sets up rebase sync and calls for a check on what it gets.
     console.log("Sync DB")
     console.log(this.state)
    this.ref = Base.syncState(`${this.props.match.params.inviteId}/event`, {
      context: this,
+     defaultValue:{test: "yes"},
      state: "event",
-     then: this.setLoading()
+     then: this.setLoaded()
    });
+   
  }
 
-  setLoading(){
-      this.setState({loading: false}, () => {console.log("loading set to false")})
+  setLoaded(){
+      this.setState({loaded: true}, () => {console.log("loaded set to " + this.state.loaded.toString())})
   }
 
 
   checkValid(){ //Checks the state that is on the DB for this URL
       console.log("Check Valid")
-      console.log(this.state)
-    if (typeof this.state.event.days === "object" && !this.setLoading) {
+      console.log(this.state.event)
+      console.log("Event is empty? " + this.isEmptyObject(this.state.event))
+    if (typeof this.state.event.days === "object") {
       console.log("Days array already exists, skipping date creation")
-    } else if (!this.state.event.days && !this.setLoading ) {
+    } else if (!this.isEmptyObject(this.state.event) && this.setLoaded) {
        console.log("building new dates")
        this.buildDates();
-    }
-    if (typeof this.state.event.name === undefined && typeof this.props.location.state === undefined){
-      console.log("name not found in either props or state.")
-      this.props.history.push("/");
     }
   }
   
 
   buildDates() { //builds the event object if empty
+    
     console.log("Build Dates")
     console.log(this.state)
     let newEvent = this.state.event;
@@ -83,8 +103,8 @@ class App extends Component {
   }
 
   buildDays(newEvent){
-      console.log("Build Days")
-      console.log(this.state)
+    console.log("Build Days")
+    console.log(this.state)
     let upcomingMonths = [];
     const upcomingDays = [];
     const daysAhead = newEvent.numberOfDays;
@@ -102,6 +122,7 @@ class App extends Component {
       upcomingMonths.push(newDay.dayMonth);
       return newDay
     })
+    console.log("is the formatted days being used?")
     newEvent.days = formattedDays;
 
     //build month array by removing dupes from month array.
@@ -133,7 +154,7 @@ class App extends Component {
           <h4> http://invitomatic.com{this.props.location.pathname}</h4>
           </header>
           <section>
-            <h2>{this.state.event.numberOfDays} Hey, {this.state.event.author} wants to {this.state.event.name}.</h2>
+            <h2>Hey, {this.state.event.author} wants to {this.state.event.name}.</h2>
             <h3>Do you want in?</h3> 
             <button onClick={this.buttonYesEvent}> Yeah!</button>
             <button>Nah!</button>
@@ -148,7 +169,8 @@ class App extends Component {
           />
         </div>
       );
-    }
+  }
+
 }
 
 export default App;
