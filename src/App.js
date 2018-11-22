@@ -1,11 +1,31 @@
 /*
-ToDO 
-Set up Firebase Integration - DONE
+* * Application to do List 
 
-Input Formatting
+* * DONE
+Sort out day Logic 
+Set up Firebase Integration
+Sort out path logic 
+Sort out In behavior
+Sort out Out Behavior
+Sort out what you see at start, hide stuff till its loaded.
+General situation text.
+URL formatting
 
+* * CURRENT
+------
+
+
+Input limits
+Clipboard thing.
+Just proper name
+
+
+
+* * FUTURE
+------
 Overall formatting.
-Refactoring/Comments
+Quality of Life
+Refactoring/Comments/Console.logs
 Build!
 Host!
 */
@@ -22,7 +42,9 @@ class App extends Component {
   state = {
     event: {},
     daysOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-    loaded: false
+    loaded: false,
+    currentUser: "",
+    currentUserChoice: "unknown"
   }
 
   isEmptyObject(obj) {
@@ -103,8 +125,14 @@ class App extends Component {
     newEvent.name =  this.props.location.state.name
     newEvent.days = []
     newEvent.months = []
+    newEvent.in = []
+    newEvent.out = []
+
     newEvent.numberOfDays = 90;
     newEvent.failed = false;
+    
+    newEvent.out.push("None");
+    newEvent.in.push(newEvent.author + "[creator]");
     this.buildDays(newEvent)
     this.setState({event:newEvent})
   }
@@ -126,7 +154,7 @@ class App extends Component {
       newDay.dayNumber = day.format("DD");
       newDay.dayName = day.format("dddd");
       newDay.dayMonth = day.format("MMMM");
-      upcomingMonths.push(newDay.dayMonth);
+      upcomingMonths.push(newDay.dayMonth); 
       return newDay
     })
     console.log("is the formatted days being used?")
@@ -148,7 +176,77 @@ class App extends Component {
    this.setState({event: newEvent})
  }
 
+ userInput = (event) => {  //controls the name input
+  let user = this.state.currentUser;
+  user = event.target.value;
+  this.setState({currentUser: user})
+ }
 
+ checkUser = (user) => { //checks the name and moves the previous responses from in and out
+  
+   let newEvent = this.state.event;
+   console.log("checkUser")
+   if (this.state.event.in.length > 0) newEvent.in = this.state.event.in.filter(inUser => inUser !== (", " + user));
+   console.info(newEvent.in);
+   if (this.state.event.out.length > 0) newEvent.out = this.state.event.out.filter(inUser => inUser !== (", " + user));
+   this.setState({event: newEvent})
+ }
+ setIn = () => {
+  this.checkUser(this.state.currentUser);
+  let newEvent = this.state.event
+  newEvent.in.push(", " + this.state.currentUser)
+  this.setState({event: newEvent})
+  this.setState({currentUserChoice: "in"})
+ }
+
+ setOut = () => {
+  this.checkUser(this.state.currentUser);
+  let newEvent = this.state.event
+  if (newEvent.out[0] === "None"){newEvent.out[0] = this.state.currentUser} 
+  else {newEvent.out.push(", " + this.state.currentUser)}
+  this.setState({event: newEvent})
+  this.setState({currentUserChoice: "out"})
+ }
+  summaryDisplay = (event) => { //Shows the event summary if DB is loaded.
+  
+    if (Object.keys(event).length > 1 && typeof this.props.location.state === "undefined") {
+       return (
+        <section>
+          <h2>Hey, {this.state.event.author} wants to {this.state.event.name}.</h2>
+          <h3>People Currently In: {this.state.event.in}</h3>
+          <h3>People Currently Out: {this.state.event.out}</h3>
+          <h2>So, who are you?</h2> 
+          <input className="landing_input" type= "text" value={this.state.currentUser} onChange={this.userInput}/>
+          <h2>And are you up for it?</h2>
+          <button className="landing_button" onClick={this.setIn} type="submit">Yeah! </button> 
+          <button className="landing_button" onClick={this.setOut} type="submit">Nah.. </button>
+        </section>   
+     ) 
+    } 
+    if (Object.keys(event).length > 1 && typeof this.props.location.state === "object") {
+       return (
+        <section>
+          <h2>So you want to {this.state.event.name}</h2>
+          <h3>People Currently In: {this.state.event.in}</h3>
+          <h3>People Currently Out: {this.state.event.out}</h3>
+        </section>   
+     ) 
+    } 
+   
+  }
+  resultDisplay = (choice) => {
+    if ((choice === "in" || typeof this.props.location.state === 'object') && Object.keys(this.state.event).length > 1 ) {
+       return <Calendar 
+          toggleDoable={this.toggleDoable}
+          state={this.state}
+          days={this.state.event.days} 
+          months={this.state.event.months} 
+          numberOfDays={this.state.event.numberOfDays}
+          daysOfWeek={this.state.daysOfWeek}
+          isNewEvent={typeof this.props.location.state}
+          />
+    } else if (choice === "out") {return <h3> Bummer, I am here if you change your mind</h3>}
+  }
 
   render() {
       if (this.state.event.failed && !this.state.event.days && this.state.loaded && !this.props.location.state ) {
@@ -157,29 +255,16 @@ class App extends Component {
       return (
      
         <div className="App">
-
           <header className="App-header">
           <h1>Invitomatic</h1>
           <h4> http://invitomatic.com{this.props.location.pathname}</h4>
           </header>
-          <section>
-            <h2>Hey, {this.state.event.author} wants to {this.state.event.name}.</h2>
-            <h3>People In: </h3>
-            <h3>People Out:</h3>
-            <h2>So, who are you?</h2> 
-            <input className="landing_input" type= "text"/>
-            <h2>And are you up for it?</h2>
-            <button className="landing_button" type="submit">Yeah!</button> <button className="landing_button" type="submit">Nah..</button>
-  
-          </section>
-          <Calendar 
-            toggleDoable={this.toggleDoable}
-            state={this.state}
-            days={this.state.event.days} 
-            months={this.state.event.months} 
-            numberOfDays={this.state.event.numberOfDays}
-            daysOfWeek={this.state.daysOfWeek}
-          />
+         
+            {this.summaryDisplay(this.state.event)}
+           
+            {this.resultDisplay(this.state.currentUserChoice)}
+          
+          
         </div>
       );
   }

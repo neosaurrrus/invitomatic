@@ -6,7 +6,7 @@ class Landing extends React.Component {
     state = {
         author: "",
         name: "",
-        duration: 90
+        duration: 90,
     }
     updateAuthor = event => { //Updates the Author in State
         let newAuthor = event.target.value;
@@ -28,12 +28,17 @@ class Landing extends React.Component {
         })
     }
 
+    parseURL = () => { //makes the URL string by combining author, name and some random digits.
+        let random3Digits = Math.floor((Math.random() * 1000))
+        let newURL = `${this.state.author.toLowerCase()}-${this.state.name.toLowerCase()}-${random3Digits}`
+        newURL = newURL.replace(/\s+/g, '');
+        return newURL;
+    }
 
 
     render(){
         return (
         <div className="App">
-
             <header className="App-header">
                 <h1>make time for good times</h1>
                 <p>a no-fuss site to figure out what dates people can make.</p>
@@ -47,9 +52,9 @@ class Landing extends React.Component {
                 <br/>
                 <br/>
                 <Link to={{
-                        pathname: `/i/${this.state.author}-${this.state.name}-${Date.now()}`,
+                        pathname: `/i/${this.parseURL()}`,
                         state: this.state
-                            }}> <button className="landing_button" type="submit">Pick Some dates &rarr;</button>
+                        }}> <button className="landing_button" type="submit">Pick Some dates &rarr;</button>
                 </Link>
             </section>
             

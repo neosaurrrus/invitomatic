@@ -77,5 +77,6 @@
 
 .day_doable{
   background: green;
+  color: var(--offWhite);
 }
 

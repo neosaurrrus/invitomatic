@@ -31,7 +31,7 @@ class Calendar extends React.Component {
     }
 
     calcDays(month){
-        let days =  this.props.days.map((dayElement, index)=>{
+        let days =  this.props.days.map((dayElement, index) => {
             if(dayElement.dayMonth===month){
                 if (index === 0) {
                     return this.insertBlanksFirst(dayElement, index, this.calcBlanks(this.props.days[0].dayName, 0))
@@ -46,7 +46,6 @@ class Calendar extends React.Component {
                         daysOfWeek = {this.props.daysOfWeek}
                     />)
             }
-            return
         })
         return days;
     }
@@ -77,13 +76,31 @@ class Calendar extends React.Component {
         return blanks;
      }
 
+    calendarText = (isNew) => {
+        if (isNew){
+            return (
+                <section>
+                <h3>Let's find some dates</h3>
+                <p>Mark the days you are availiable, then send this web address to people you want ot join you, they can change this calendar in real time.</p>
+                <br/>
+            </section>
+            )
+        }
+        else return (
+            <section>
+                <h3> Good Choice, let's make some good times!</h3>
+                <p>The days everyone else can do so far are highlighted below, all you need to tick off the ones that are no good for you</p>
+                <br/>
+            </section>
+        )
+    }
+
 
     render() {
         return (
-         
         <div className="App">
-            <p>Cool, the days everyone else can do are highlighted below, all you need to tick off the ones that are no good for you</p>
-            <br/>
+            {this.calendarText(this.props.isNewEvent)}
+            
             {this.calcMonths()}
         </div>)
     }
