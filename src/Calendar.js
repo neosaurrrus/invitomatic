@@ -80,8 +80,7 @@ class Calendar extends React.Component {
         if (isNew){
             return (
                 <section>
-                <h3>Let's find some dates</h3>
-                <p>Mark the days you are availiable, then send this web address to people you want ot join you, they can change this calendar in real time.</p>
+                <p>Mark the days you are availiable, people you share this page with can edit this in real time!</p>
                 <br/>
             </section>
             )
@@ -89,7 +88,7 @@ class Calendar extends React.Component {
         else return (
             <section>
                 <h3> Good Choice, let's make some good times!</h3>
-                <p>The days everyone else can do so far are highlighted below, all you need to tick off the ones that are no good for you</p>
+                <p>The days everyone else can do so far are highlighted below, all you need to tick off the ones that you can't make</p>
                 <br/>
             </section>
         )

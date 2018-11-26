@@ -10,14 +10,14 @@ Sort out Out Behavior
 Sort out what you see at start, hide stuff till its loaded.
 General situation text.
 URL formatting
+Input limits
+Clipboard thing.
 
 * * CURRENT
 ------
 
-
-Input limits
-Clipboard thing.
-Just proper name
+Change it to proper name
+Favicon
 
 
 
@@ -104,14 +104,6 @@ class App extends Component {
     console.error("Cannot deterimine what to do.")
   }
   
-  // checkURL() { //checks to see if this URL contains props normally given by the landing component. IF not redirect to Landing.
-  //   console.log(this.state.event)
-  //   if (this.state.event.failed) {
-  //     console.log("Empty DB Entry for this URL. Bumping to landing")
-  //     this.props.history.push("/");
-  //     // HOW TO HARD REDIRECT AS IT SEEMS TO KEEP GOINg ON
-  //   }
-  // }
 
   buildDates() { //builds the event object if empty
     console.log("checking that this was a valid URL")
@@ -191,7 +183,23 @@ class App extends Component {
    if (this.state.event.out.length > 0) newEvent.out = this.state.event.out.filter(inUser => inUser !== (", " + user));
    this.setState({event: newEvent})
  }
- setIn = () => {
+
+
+
+copyURL = () => {
+
+  var dummy = document.createElement("input");
+  document.body.appendChild(dummy);
+  dummy.setAttribute('value', `https://invite.li${this.props.location.pathname}`);
+  dummy.select();
+  document.execCommand("copy");
+  document.body.removeChild(dummy);
+
+
+
+
+}
+ setIn = () => { //When the invite is accepted via button, add the person to the In array.
   this.checkUser(this.state.currentUser);
   let newEvent = this.state.event
   newEvent.in.push(", " + this.state.currentUser)
@@ -199,7 +207,7 @@ class App extends Component {
   this.setState({currentUserChoice: "in"})
  }
 
- setOut = () => {
+ setOut = () => { //When the invite is declined via button, add the person to the Out array
   this.checkUser(this.state.currentUser);
   let newEvent = this.state.event
   if (newEvent.out[0] === "None"){newEvent.out[0] = this.state.currentUser} 
@@ -207,29 +215,47 @@ class App extends Component {
   this.setState({event: newEvent})
   this.setState({currentUserChoice: "out"})
  }
+
   summaryDisplay = (event) => { //Shows the event summary if DB is loaded.
-  
     if (Object.keys(event).length > 1 && typeof this.props.location.state === "undefined") {
        return (
-        <section>
-          <h2>Hey, {this.state.event.author} wants to {this.state.event.name}.</h2>
-          <h3>People Currently In: {this.state.event.in}</h3>
-          <h3>People Currently Out: {this.state.event.out}</h3>
-          <h2>So, who are you?</h2> 
-          <input className="landing_input" type= "text" value={this.state.currentUser} onChange={this.userInput}/>
-          <h2>And are you up for it?</h2>
-          <button className="landing_button" onClick={this.setIn} type="submit">Yeah! </button> 
-          <button className="landing_button" onClick={this.setOut} type="submit">Nah.. </button>
-        </section>   
+        <div>
+          <header className="App-header">
+            <h3>inviteli</h3>
+            <h2>Hey, {this.state.event.author} wants to {this.state.event.name}.</h2>
+            <h4>People In: {this.state.event.in}</h4>
+            <h4>People Out: {this.state.event.out}</h4>
+              <button className="app_inverseButton" onClick={this.copyURL}>copy link</button>
+            <br/>
+          </header>
+          <section>
+            <h2>First, who are you?</h2> 
+            <input className="landing_input" type= "text" value={this.state.currentUser} onChange={this.userInput}/>
+            <h2>And are you up for it?</h2>
+            <button className="landing_button" onClick={this.setIn} type="submit">Yeah! </button> 
+            <button className="landing_button" onClick={this.setOut} type="submit">Nah.. </button>
+          </section>
+        </div> 
      ) 
     } 
     if (Object.keys(event).length > 1 && typeof this.props.location.state === "object") {
        return (
-        <section>
-          <h2>So you want to {this.state.event.name}</h2>
-          <h3>People Currently In: {this.state.event.in}</h3>
-          <h3>People Currently Out: {this.state.event.out}</h3>
-        </section>   
+        <div>
+          <header className="App-header">
+          <h3>inviteli</h3>
+            <h2>Let's {this.state.event.name}!</h2>
+            <h3>Pick some dates below and share</h3>
+          <button className="app_inverseButton" onClick={this.copyURL}>copy</button>
+          <br/>
+          </header>
+          <section>
+            <h3>Responses</h3>
+              <p>People In: {this.state.event.in}</p>
+              <p>People Out: {this.state.event.out}</p>
+              <br/>
+            <h3>Dates you can make</h3>
+          </section>   
+        </div>
      ) 
     } 
    
@@ -245,7 +271,7 @@ class App extends Component {
           daysOfWeek={this.state.daysOfWeek}
           isNewEvent={typeof this.props.location.state}
           />
-    } else if (choice === "out") {return <h3> Bummer, I am here if you change your mind</h3>}
+    } else if (choice === "out") {return <h3> Bummer, come back here if you change your mind</h3>}
   }
 
   render() {
@@ -253,18 +279,9 @@ class App extends Component {
          return <Redirect to='/'/>;
       }
       return (
-     
         <div className="App">
-          <header className="App-header">
-          <h1>Invitomatic</h1>
-          <h4> http://invitomatic.com{this.props.location.pathname}</h4>
-          </header>
-         
             {this.summaryDisplay(this.state.event)}
-           
             {this.resultDisplay(this.state.currentUserChoice)}
-          
-          
         </div>
       );
   }

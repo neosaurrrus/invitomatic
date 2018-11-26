@@ -40,15 +40,15 @@ class Landing extends React.Component {
         return (
         <div className="App">
             <header className="App-header">
-                <h1>make time for good times</h1>
+                <h1>inviteli</h1>
                 <p>a no-fuss site to figure out what dates people can make.</p>
             </header>
             <section className="landing_section">
                 <h2>First off, just two simple questions.</h2>
                 <h3>Your name is: </h3>
-                <input className="landing_input" type= "text" onChange={this.updateAuthor} value={this.state.author}/>
+                <input className="landing_input" type= "text" maxlength="12" onChange={this.updateAuthor} value={this.state.author}/>
                 <h3> And you want to: </h3>
-                <input className="landing_input" type= "text" onChange={this.updateName} value={this.state.name}/>
+                <input className="landing_input" type= "text" maxlength="20" onChange={this.updateName} value={this.state.name}/>
                 <br/>
                 <br/>
                 <Link to={{

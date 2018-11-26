@@ -40,6 +40,21 @@
   font-size: 1.5rem;
   padding: 10px;
 }
+
+.app_inverseButton {
+  background: var(--semiTransparent);
+  border: 1px solid var(--offWhite);
+  font-size: 1.3rem;
+  padding: 10px;
+  color: var(--offWhite)
+}
+
+.app_inverseButton:hover {
+  background: var(--offWhite);
+  color: var(--blackground)
+}
+
+
 .calendar_calendarBox{
   display:grid;
   grid-template-columns: repeat(7, 12%);
@@ -67,7 +82,6 @@
   height: 90%;
   width: 90%;
   font-size: 0.95rem;
-  
 }
 .day_dayBox{
   margin: 0 auto;
