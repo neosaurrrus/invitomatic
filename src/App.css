@@ -1,25 +1,39 @@
 :root{
-  --doable: rgb(40,140,40);
-  --notdoable: rgb(75, 75, 75);
+  --doable: rgba(0, 199, 66, 0.5);
+  --notdoable: rgba(0, 0, 0, 0.2);
   --blackground: #282c34;
-  --offWhite: rgb(240,240,240);
-  --semiTransparent: rgba(0,0,0,0.1);
-  font-size: 18px;
+  --offWhite: rgb(224, 224, 224);
+  --fadedWhite: rgba(224, 224, 224, 0.5);
+  --semiTransparent: rgba(0, 0, 0, 0.1);
+  --notVeryTransparent: rgba(0,0,0,0.3);
+  font-size: calc(10px + 2vmin);
+}
+
+body{
+color: var(--offWhite);
+background-image: linear-gradient(to bottom, #09203f 0%, #537895 100%);
+font-family: Arial, Helvetica, sans-serif;
+font-weight: 100;
+}
+
+.small_text{
+  font-size: 0.8rem;
+  line-height: 0;
 }
 .App {
   text-align: center;
+  min-height: 100vh;
 }
 
 .App-header {
-  background-color: var(--blackground);
+  background: var(--notVeryTransparent); 
   min-height: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: var(--offWhite);
 }
+
 
 .landing_section{
   font-size: 1.3rem;
@@ -31,31 +45,39 @@
   text-align: center;
   min-width: 60px;
   margin: 10px;
-  border: 1px solid var(--blackground);
+  border: 1px solid var(--offWhite);
+  color: var(--offWhite);
 }
 
 .landing_button {
   background: var(--semiTransparent);
-  border: 1px solid var(--blackground);
-  font-size: 1.5rem;
+  color: var(--offWhite);
+  border: 1px solid var(--offWhite);
+  font-size: 1rem;
   padding: 10px;
+  margin-right: 50px;
 }
+
 
 .app_inverseButton {
   background: var(--semiTransparent);
   border: 1px solid var(--offWhite);
-  font-size: 1.3rem;
+  font-size: 0.8rem;
   padding: 10px;
-  color: var(--offWhite)
+  color: var(--offWhite);
+  text-transform: uppercase;
+  transition: all 0.5s;
 }
 
 .app_inverseButton:hover {
   background: var(--offWhite);
-  color: var(--blackground)
+  color: var(--blackground);
+  transition: all 0.5s;
 }
 
 
 .calendar_calendarBox{
+  color: var(--fadedWhite);
   display:grid;
   grid-template-columns: repeat(7, 12%);
   grid-template-rows: 50px 30px;
@@ -66,31 +88,35 @@
   margin: 0 auto;
   justify-content: space-between;
   text-align: center;
-
+  text-transform: lowercase;
+  border: 1px solid var(--fadedWhite);
+  margin-bottom: 50px;
 }
 .calendar_monthTitle{
   grid-column: span 7;
-  background: var(--blackground);
-  color: var(--offWhite);
-  padding-bottom: 5px;
-  font-size: 2rem;
+  background: var(--semiTransparent);
+  color: var(--fadedWhite);
+  padding: 5px;
+  font-size: 1.3rem;
 }
-.day_dayButton{
-  border-radius: 100%;
-  border: 2px solid var(--notdoable);
-  color: var(--notdoable);
-  height: 90%;
-  width: 90%;
-  font-size: 0.95rem;
-}
-.day_dayBox{
+.day_dayBox {
   margin: 0 auto;
   width: 40px;
   height: 100%;
 }
-
-.day_doable{
-  background: green;
+.day_dayButton{
+  border-radius: 100%;
+  background: var(--semiTransparent);
+  border: 2px solid var(--fadedWhite);
   color: var(--offWhite);
+  height: 90%;
+  width: 90%;
+  font-size: 0.7rem;
+  transition: all 0.5s;
 }
-
+.day_doable{
+  transition: all 0.5s;
+  background: var(--doable);
+  color: var(--offWhite);
+  border: 2px solid var(--offWhite);
+}

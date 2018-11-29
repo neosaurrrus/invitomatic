@@ -4,29 +4,23 @@ import Day from './Day';
          
 
 class Calendar extends React.Component {
-   
-    componentDidUpdate(){
 
-    }
-
-     
-    calcMonths(){
+    calcMonths(){ //Works out what the calendar shoudl look like
         if (this.props.months){
         return this.props.months.map((month, index) =>{
-                    return (
-                        <div key={this.props.months[index]} className="calendar_calendarBox">
-                            <div key={this.props.months[index]} className="calendar_monthTitle">{month}</div>
-                            <div key={this.props.daysOfWeek[0]}>Mon</div>
-                            <div key={this.props.daysOfWeek[1]}>Tue</div>
-                            <div key={this.props.daysOfWeek[2]}>Wed</div>
-                            <div key={this.props.daysOfWeek[3]}>Thu</div>
-                            <div key={this.props.daysOfWeek[4]}>Fri</div>
-                            <div key={this.props.daysOfWeek[5]}>Sat</div>
-                            <div key={this.props.daysOfWeek[6]}>Sun</div>
-                            {this.calcDays(month)}
-                        </div>) 
+                return (
+                    <div key={this.props.months[index]} className="calendar_calendarBox">
+                        <div key={this.props.months[index]} className="calendar_monthTitle">{month}</div>
+                        <div key={this.props.daysOfWeek[0]}>Mon</div>
+                        <div key={this.props.daysOfWeek[1]}>Tue</div>
+                        <div key={this.props.daysOfWeek[2]}>Wed</div>
+                        <div key={this.props.daysOfWeek[3]}>Thu</div>
+                        <div key={this.props.daysOfWeek[4]}>Fri</div>
+                        <div key={this.props.daysOfWeek[5]}>Sat</div>
+                        <div key={this.props.daysOfWeek[6]}>Sun</div>
+                        {this.calcDays(month)}
+                    </div>) 
             })
-
         } 
     }
 
@@ -94,12 +88,10 @@ class Calendar extends React.Component {
         )
     }
 
-
     render() {
         return (
         <div className="App">
             {this.calendarText(this.props.isNewEvent)}
-            
             {this.calcMonths()}
         </div>)
     }

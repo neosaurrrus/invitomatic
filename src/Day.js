@@ -21,11 +21,6 @@ class Day extends React.Component {
         }
     }
 
-
-    componentDidUpdate(){ //check it is Doable when loaded
-       
-    }
-
     render(){
         return (
         <div className="day_dayBox">
@@ -34,6 +29,5 @@ class Day extends React.Component {
         )
     }
 }
-
 
 export default Day;

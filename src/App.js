@@ -12,20 +12,28 @@ General situation text.
 URL formatting
 Input limits
 Clipboard thing.
+Change it to proper name
+Favicon
 
 * * CURRENT
 ------
 
-Change it to proper name
-Favicon
+Refactoring 
+
+- New days object
+- Put the two summary paths into a component each
+
+
+Overall formatting.
+
+- Add UI design small things, read guide.
+
 
 
 
 * * FUTURE
 ------
-Overall formatting.
-Quality of Life
-Refactoring/Comments/Console.logs
+
 Build!
 Host!
 */
@@ -47,7 +55,7 @@ class App extends Component {
     currentUserChoice: "unknown"
   }
 
-  isEmptyObject(obj) {
+  isEmptyObject(obj) { //Helper function to determine if an object is empty.
     let el=""
     for( el in obj){
       return false;
@@ -55,16 +63,13 @@ class App extends Component {
     return true;
   }
   componentDidMount(){
-    console.log(this.props.location)
     this.syncDB();
-    console.log(this.state.event)
-    console.log("does this occur before loading?")
   }
   componentDidUpdate(){
     if (this.state.loaded && !this.isEmptyObject(this.state.event)) {
       this.checkValid()
     } else {
-      console.log("Not Loaded yet")
+      console.info("Event is not loaded yet")
     }
   }
 
@@ -75,8 +80,6 @@ class App extends Component {
   
 
  syncDB() { //Sets up rebase sync and calls for a check on what it gets.
-    console.log("Sync DB")
-    console.log(this.state)
    this.ref = Base.syncState(`${this.props.match.params.inviteId}/event`, {
      context: this,
      defaultValue:{failed: true},
@@ -86,31 +89,23 @@ class App extends Component {
    
  }
 
-  setLoaded(){
+  setLoaded(){ //Sets the loaded property in state to true
       this.setState({loaded: true}, () => {console.log("loaded set to " + this.state.loaded.toString())})
   }
 
 
   checkValid(){ //Checks the state that is on the DB for this URL
-      console.log("Check Valid")
-      console.log(this.state.event)
-      console.log("Event is empty? " + this.isEmptyObject(this.state.event))
     if (typeof this.state.event.days === "object") {
-      console.log("Days array already exists, skipping date creation")
+      console.info("Event already exists, skipping date creation")
     } else if (this.props.location.state) {
-      console.log("building new dates")
+      console.info("building new dates")
       this.buildDates();
     }
-    console.error("Cannot deterimine what to do.")
+    console.info("Valid Event, nothing to be done")
   }
   
 
   buildDates() { //builds the event object if empty
-    console.log("checking that this was a valid URL")
-
-    // this.checkURL()
-    console.log("Build Dates")
-    console.log(this.state)
     let newEvent = this.state.event;
     newEvent.inviteID = this.props.match.params.inviteId
     newEvent.author = this.props.location.state.author
@@ -119,19 +114,15 @@ class App extends Component {
     newEvent.months = []
     newEvent.in = []
     newEvent.out = []
-
     newEvent.numberOfDays = 90;
     newEvent.failed = false;
-    
-    newEvent.out.push("None");
+    // newEvent.out.push("None");
     newEvent.in.push(newEvent.author + "[creator]");
     this.buildDays(newEvent)
     this.setState({event:newEvent})
   }
 
-  buildDays(newEvent){
-    console.log("Build Days")
-    console.log(this.state)
+  buildDays(newEvent){ //Populates the event with days using Moment library
     let upcomingMonths = [];
     const upcomingDays = [];
     const daysAhead = newEvent.numberOfDays;
@@ -149,19 +140,15 @@ class App extends Component {
       upcomingMonths.push(newDay.dayMonth); 
       return newDay
     })
-    console.log("is the formatted days being used?")
     newEvent.days = formattedDays;
 
     //build month array by removing dupes from month array.
     let monthSet = new Set(upcomingMonths)
     newEvent.months = [...monthSet];
-
   };
 
   
-  
-
- toggleDoable = (index) => {
+ toggleDoable = (index) => { //function to set a given day to doable or not
    let newEvent = this.state.event
    let newDays = newEvent.days
    newDays[index].doable=!newDays[index].doable;
@@ -174,31 +161,24 @@ class App extends Component {
   this.setState({currentUser: user})
  }
 
- checkUser = (user) => { //checks the name and moves the previous responses from in and out
-  
+ checkUser = (user) => { //checks the name has responded before and removes it prior to setIn or setOut
    let newEvent = this.state.event;
-   console.log("checkUser")
-   if (this.state.event.in.length > 0) newEvent.in = this.state.event.in.filter(inUser => inUser !== (", " + user));
-   console.info(newEvent.in);
-   if (this.state.event.out.length > 0) newEvent.out = this.state.event.out.filter(inUser => inUser !== (", " + user));
+   newEvent.in = this.state.event.in.filter(inUser => inUser !== (", " + user));
+   if (this.state.event.in.length > 0) newEvent.out = this.state.event.out.filter(inUser => inUser !== (", " + user));
    this.setState({event: newEvent})
  }
 
 
 
-copyURL = () => {
-
-  var dummy = document.createElement("input");
+copyURL = () => { //Puts the URL into the clipboard. Uses code I borrowed from stackoverflow as I am too dumb to understand refs
+  let dummy = document.createElement("input");
   document.body.appendChild(dummy);
   dummy.setAttribute('value', `https://invite.li${this.props.location.pathname}`);
   dummy.select();
   document.execCommand("copy");
   document.body.removeChild(dummy);
-
-
-
-
 }
+
  setIn = () => { //When the invite is accepted via button, add the person to the In array.
   this.checkUser(this.state.currentUser);
   let newEvent = this.state.event
@@ -214,17 +194,18 @@ copyURL = () => {
   else {newEvent.out.push(", " + this.state.currentUser)}
   this.setState({event: newEvent})
   this.setState({currentUserChoice: "out"})
- }
+ }  
 
-  summaryDisplay = (event) => { //Shows the event summary if DB is loaded.
+
+  summaryDisplay = (event) => { //Shows the event summary if DB is loaded. Big dunction needs componentising.
     if (Object.keys(event).length > 1 && typeof this.props.location.state === "undefined") {
        return (
         <div>
           <header className="App-header">
             <h3>inviteli</h3>
             <h2>Hey, {this.state.event.author} wants to {this.state.event.name}.</h2>
-            <h4>People In: {this.state.event.in}</h4>
-            <h4>People Out: {this.state.event.out}</h4>
+            <p>People In: {this.state.event.in}</p>
+            <p>People Out: {this.state.event.out}</p>
               <button className="app_inverseButton" onClick={this.copyURL}>copy link</button>
             <br/>
           </header>
@@ -232,7 +213,7 @@ copyURL = () => {
             <h2>First, who are you?</h2> 
             <input className="landing_input" type= "text" value={this.state.currentUser} onChange={this.userInput}/>
             <h2>And are you up for it?</h2>
-            <button className="landing_button" onClick={this.setIn} type="submit">Yeah! </button> 
+            <button className="landing_button" onClick={this.setIn} type="submit">Yeah! </button>
             <button className="landing_button" onClick={this.setOut} type="submit">Nah.. </button>
           </section>
         </div> 
@@ -244,23 +225,23 @@ copyURL = () => {
           <header className="App-header">
           <h3>inviteli</h3>
             <h2>Let's {this.state.event.name}!</h2>
-            <h3>Pick some dates below and share</h3>
-          <button className="app_inverseButton" onClick={this.copyURL}>copy</button>
+          <br/>
+          <button className="app_inverseButton" onClick={this.copyURL}>copy link</button>
           <br/>
           </header>
           <section>
-            <h3>Responses</h3>
-              <p>People In: {this.state.event.in}</p>
+            <h4>Responses</h4>
+              <p>{this.state.event.in.length} People In: {this.state.event.in}</p>
               <p>People Out: {this.state.event.out}</p>
               <br/>
-            <h3>Dates you can make</h3>
+            <h4>Dates you can make</h4>
           </section>   
         </div>
      ) 
     } 
    
   }
-  resultDisplay = (choice) => {
+  resultDisplay = (choice) => { //Show the calendar, when 1. The user is In, 2. the event is loaded.
     if ((choice === "in" || typeof this.props.location.state === 'object') && Object.keys(this.state.event).length > 1 ) {
        return <Calendar 
           toggleDoable={this.toggleDoable}
