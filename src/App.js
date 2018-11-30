@@ -20,15 +20,16 @@ Favicon
 
 Refactoring 
 
-- New days object
+
+
+- New days object, I have no idea what this means
 - Put the two summary paths into a component each
+
 
 
 Overall formatting.
 
 - Add UI design small things, read guide.
-
-
 
 
 * * FUTURE
@@ -43,8 +44,11 @@ import React, { Component } from 'react';
 import {Redirect} from 'react-router-dom';
 import Base from "./Base"
 import Calendar from './Calendar';
+import Responses from './Responses';
 import moment from 'moment'
 import './App.css';
+import NewEvent from './NewEvent';
+import CurrentEvent from './CurrentEvent';
 
 class App extends Component {
   state = {
@@ -141,7 +145,6 @@ class App extends Component {
       return newDay
     })
     newEvent.days = formattedDays;
-
     //build month array by removing dupes from month array.
     let monthSet = new Set(upcomingMonths)
     newEvent.months = [...monthSet];
@@ -167,8 +170,6 @@ class App extends Component {
    if (this.state.event.in.length > 0) newEvent.out = this.state.event.out.filter(inUser => inUser !== (", " + user));
    this.setState({event: newEvent})
  }
-
-
 
 copyURL = () => { //Puts the URL into the clipboard. Uses code I borrowed from stackoverflow as I am too dumb to understand refs
   let dummy = document.createElement("input");
@@ -197,51 +198,40 @@ copyURL = () => { //Puts the URL into the clipboard. Uses code I borrowed from s
  }  
 
 
-  summaryDisplay = (event) => { //Shows the event summary if DB is loaded. Big dunction needs componentising.
+  displayHeader = (event) => { //Shows the event summary if DB is loaded. Big dunction needs componentising.
     if (Object.keys(event).length > 1 && typeof this.props.location.state === "undefined") {
        return (
-        <div>
-          <header className="App-header">
-            <h3>inviteli</h3>
-            <h2>Hey, {this.state.event.author} wants to {this.state.event.name}.</h2>
-            <p>People In: {this.state.event.in}</p>
-            <p>People Out: {this.state.event.out}</p>
-              <button className="app_inverseButton" onClick={this.copyURL}>copy link</button>
-            <br/>
-          </header>
-          <section>
-            <h2>First, who are you?</h2> 
-            <input className="landing_input" type= "text" value={this.state.currentUser} onChange={this.userInput}/>
-            <h2>And are you up for it?</h2>
-            <button className="landing_button" onClick={this.setIn} type="submit">Yeah! </button>
-            <button className="landing_button" onClick={this.setOut} type="submit">Nah.. </button>
-          </section>
-        </div> 
+       <NewEvent
+          name={this.state.event.name}
+          author={this.state.event.author}
+          currentUser={this.state.currentUser}
+          out={this.state.event.out}
+          in={this.state.event.in}
+          copyURL={this.copyURL}
+          setIn={this.setIn}
+          setOut={this.setOut}
+          userInput={this.userInput}
+        />
      ) 
     } 
     if (Object.keys(event).length > 1 && typeof this.props.location.state === "object") {
        return (
-        <div>
-          <header className="App-header">
-          <h3>inviteli</h3>
-            <h2>Let's {this.state.event.name}!</h2>
-          <br/>
-          <button className="app_inverseButton" onClick={this.copyURL}>copy link</button>
-          <br/>
-          </header>
-          <section>
-            <h4>Responses</h4>
-              <p>{this.state.event.in.length} People In: {this.state.event.in}</p>
-              <p>People Out: {this.state.event.out}</p>
-              <br/>
-            <h4>Dates you can make</h4>
-          </section>   
-        </div>
+        <CurrentEvent
+          name={this.state.event.name}
+          author={this.state.event.author}
+          currentUser={this.state.currentUser}
+          out={this.state.event.out}
+          in={this.state.event.in}
+          copyURL={this.copyURL}
+          setIn={this.setIn}
+          setOut={this.setOut}
+          userInput={this.userInput}
+        />
      ) 
     } 
-   
   }
-  resultDisplay = (choice) => { //Show the calendar, when 1. The user is In, 2. the event is loaded.
+  
+  displayCalendar = (choice) => { //Show the calendar, when 1. The user is In, 2. the event is loaded.
     if ((choice === "in" || typeof this.props.location.state === 'object') && Object.keys(this.state.event).length > 1 ) {
        return <Calendar 
           toggleDoable={this.toggleDoable}
@@ -261,8 +251,8 @@ copyURL = () => { //Puts the URL into the clipboard. Uses code I borrowed from s
       }
       return (
         <div className="App">
-            {this.summaryDisplay(this.state.event)}
-            {this.resultDisplay(this.state.currentUserChoice)}
+            {this.displayHeader(this.state.event)}
+            {this.displayCalendar(this.state.currentUserChoice)}
         </div>
       );
   }

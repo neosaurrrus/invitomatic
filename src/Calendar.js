@@ -76,7 +76,7 @@ class Calendar extends React.Component {
                 <section>
                 <p>Mark the days you are availiable, people you share this page with can edit this in real time!</p>
                 <br/>
-            </section>
+                </section>
             )
         }
         else return (
