@@ -8,7 +8,7 @@ class ExistingEvent extends Component {
     return (
       <div>
         <header className="App-header">
-          <h3>inviteli</h3>
+          <h3 className="logo">inviteli</h3>
           <h2>Hey, {this.props.author} wants to {this.props.name}.</h2>
           <Responses
             in={this.props.in}
@@ -18,9 +18,9 @@ class ExistingEvent extends Component {
           <br/>
         </header>
         <section>
-          <h2>Who are you?</h2> 
+          <h3>Who are you?</h3> 
           <input className="landing_input" type= "text" value={this.props.currentUser} onChange={this.props.userInput}/>
-          <h2>And are you up for it?</h2>
+          <h3>And are you up for it?</h3>
           <button className="landing_button" onClick={this.props.setIn} type="submit">Yeah!</button>
           <button className="landing_button" onClick={this.props.setOut} type="submit">Nah.</button>
         </section>

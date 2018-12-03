@@ -1,5 +1,3 @@
-
-
 import React, { Component } from 'react';
 import './App.css';
 
@@ -27,9 +25,7 @@ class Responses extends Component {
           {this.buildResponses()}
         </section>
       )
-        
   }
-
 }
 
 export default Responses;

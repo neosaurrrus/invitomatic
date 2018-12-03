@@ -39,21 +39,21 @@ class Landing extends React.Component { //Component responsible for Event Creati
         return (
         <div className="App">
             <header className="App-header">
-                <h1>inviteli</h1>
+                <h1 className="logo">inviteli</h1>
                 <strong>Find time for good times.</strong>
             </header>
             <section className="landing_section">
                 <h4>What's your name?</h4>
                 <input className="landing_input" type= "text" maxlength="12" onChange={this.updateAuthor} value={this.state.author}/>
                 <h4> What do you want to do with your friends? </h4>
-                <p className="small_text">e.g "sing karioke", "go whitewater rafting"</p>
+                <p className="small_text">e.g "play pool" or "go whitewater rafting"</p>
                 <input className="landing_input" type= "text" maxlength="25" onChange={this.updateName} value={this.state.name}/>
                 <br/>
                 <br/>
                 <Link to={{
                         pathname: `/i/${this.parseURL()}`,
                         state: this.state
-                        }}> <button className="landing_button" type="submit">Let's Find Time</button>
+                        }}> <button className="landing_button" type="submit">Lets Find Time</button>
                 </Link>
             </section>
         </div>

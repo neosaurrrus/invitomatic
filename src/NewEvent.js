@@ -8,7 +8,7 @@ class NewEvent extends Component {
         return (
         <div>
           <header className="App-header">
-            <h3>inviteli</h3>
+            <h3 className="logo">inviteli</h3>
               <h2>Let's {this.props.name}!</h2>
             <br/>
             <button className="app_inverseButton" onClick={this.props.copyURL}>copy link</button>

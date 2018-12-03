@@ -11,13 +11,13 @@ class Calendar extends React.Component {
                 return (
                     <div key={this.props.months[index]} className="calendar_calendarBox">
                         <div key={this.props.months[index]} className="calendar_monthTitle">{month}</div>
-                        <div key={this.props.daysOfWeek[0]}>Mon</div>
-                        <div key={this.props.daysOfWeek[1]}>Tue</div>
-                        <div key={this.props.daysOfWeek[2]}>Wed</div>
-                        <div key={this.props.daysOfWeek[3]}>Thu</div>
-                        <div key={this.props.daysOfWeek[4]}>Fri</div>
-                        <div key={this.props.daysOfWeek[5]}>Sat</div>
-                        <div key={this.props.daysOfWeek[6]}>Sun</div>
+                        <div className="calendar_dayTitle" key={this.props.daysOfWeek[0]}>Mon</div>
+                        <div className="calendar_dayTitle" key={this.props.daysOfWeek[1]}>Tue</div>
+                        <div className="calendar_dayTitle" key={this.props.daysOfWeek[2]}>Wed</div>
+                        <div className="calendar_dayTitle" key={this.props.daysOfWeek[3]}>Thu</div>
+                        <div className="calendar_dayTitle" key={this.props.daysOfWeek[4]}>Fri</div>
+                        <div className="calendar_dayTitle" key={this.props.daysOfWeek[5]}>Sat</div>
+                        <div className="calendar_dayTitle" key={this.props.daysOfWeek[6]}>Sun</div>
                         {this.calcDays(month)}
                     </div>) 
             })
@@ -69,23 +69,23 @@ class Calendar extends React.Component {
         />)
         return blanks;
      }
-
-    calendarText = (isNew) => {
-        if (isNew){
+    calendarText = (isNewEvent) => {
+        console.log(isNewEvent)
+        if (isNewEvent==="object"){
             return (
                 <section>
                 <p>Mark the days you are availiable, people you share this page with can edit this in real time!</p>
-                <br/>
                 </section>
             )
         }
-        else return (
-            <section>
-                <h3> Good Choice, let's make some good times!</h3>
-                <p>The days everyone else can do so far are highlighted below, all you need to tick off the ones that you can't make</p>
-                <br/>
-            </section>
-        )
+        else if (isNewEvent === "undefined"){
+            return (
+                <section>
+                    <h3> Good Choice, let's make some good times!</h3>
+                    <p>The days everyone else can do so far are highlighted below, all you need to tick off the ones that you can't make</p>
+                </section>
+            )
+        };
     }
 
     render() {

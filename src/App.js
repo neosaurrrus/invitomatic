@@ -15,12 +15,13 @@ Clipboard thing.
 Change it to proper name
 Favicon
 Refactored somewhat
+-Fix OUT bug in Yeah or NAH.
 
 * * CURRENT
 ------
 
-- Fix OUT bug in Yeah or NAH.
 - Fonts/Logo.
+
 
 * * FUTURE
 ------

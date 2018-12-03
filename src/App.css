@@ -1,4 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=BioRhyme|Montserrat');
 :root{
+  --feature: rgba(25,176,188);
   --doable: rgba(0, 199, 66, 0.5);
   --notdoable: rgba(0, 0, 0, 0.2);
   --blackground: #282c34;
@@ -7,16 +9,24 @@
   --semiTransparent: rgba(0, 0, 0, 0.1);
   --notVeryTransparent: rgba(0,0,0,0.3);
    font-size: calc(10px + 2vmin);
+   
 }
 
 body{
 color: var(--offWhite);
 background-image: linear-gradient(to bottom, #09203f 0%, #537895 100%);
-font-family: Arial, Helvetica, sans-serif;
-font-weight: 100;
+font-family: 'Montserrat', sans-serif;
+
 }
 section{
   margin: 50px;
+}
+h2{
+  font-family: 'BioRhyme', 'Courier New', Courier, monospace;
+}
+.logo{
+  color:var(--feature);
+  font-family: 'BioRhyme', 'Courier New', Courier, monospace;
 }
 .small_text{
   font-size: 0.8rem;
@@ -35,17 +45,17 @@ section{
   justify-content: center;
 }
 .landing_section{
-  font-size: 1.3rem;
+  font-size: 1.2rem;
 }
 .landing_input{
   background: var(--semiTransparent);
   border: 0px;
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   text-align: center;
   min-width: 60px;
-  margin: 10px;
   border: 1px solid var(--offWhite);
   color: var(--offWhite);
+  font-family: 'Montserrat', sans-serif;
 }
 
 .landing_button {
@@ -53,20 +63,20 @@ section{
   color: var(--offWhite);
   border: 1px solid var(--offWhite);
   font-size: 1rem;
+  font-family: 'Montserrat', sans-serif;
   padding: 10px;
-  margin-right: 50px;
+  margin: 0px 30px;
   transition: all 0.5s
 }
 .landing_button:hover {
-  background: var(--offWhite);
-  color: var(--blackground);
+  background: var(--feature);
   transition: all 0.5s;
 }
 
 .app_inverseButton {
   background: var(--semiTransparent);
   border: 1px solid var(--offWhite);
-  font-size: 0.8rem;
+  font-size: 0.5rem;
   padding: 10px;
   color: var(--offWhite);
   text-transform: uppercase;
@@ -98,9 +108,13 @@ section{
 .calendar_monthTitle{
   grid-column: span 7;
   background: var(--semiTransparent);
-  color: var(--fadedWhite);
-  padding: 5px;
-  font-size: 1.3rem;
+  color: var(--feature);
+  font-family: 'BioRhyme', 'Courier New', Courier, monospace;
+  padding-bottom: 5px;
+  font-size: 1rem;
+}
+.calendar_dayTitle{
+  font-size: 0.7rem;
 }
 .day_dayBox {
   margin: 0 auto;
@@ -114,12 +128,12 @@ section{
   color: var(--offWhite);
   height: 90%;
   width: 90%;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   transition: all 0.5s;
 }
 .day_doable{
   transition: all 0.5s;
-  background: var(--doable);
+  background: var(--feature);
   color: var(--offWhite);
   border: 2px solid var(--offWhite);
 }
