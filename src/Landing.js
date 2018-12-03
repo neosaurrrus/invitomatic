@@ -35,7 +35,6 @@ class Landing extends React.Component { //Component responsible for Event Creati
         return newURL;
     }
 
-
     render(){
         return (
         <div className="App">
@@ -47,14 +46,14 @@ class Landing extends React.Component { //Component responsible for Event Creati
                 <h4>What's your name?</h4>
                 <input className="landing_input" type= "text" maxlength="12" onChange={this.updateAuthor} value={this.state.author}/>
                 <h4> What do you want to do with your friends? </h4>
-                <p className="small_text">e.g "go to the cinema", "go for a drink"</p>
+                <p className="small_text">e.g "sing karioke", "go whitewater rafting"</p>
                 <input className="landing_input" type= "text" maxlength="25" onChange={this.updateName} value={this.state.name}/>
                 <br/>
                 <br/>
                 <Link to={{
                         pathname: `/i/${this.parseURL()}`,
                         state: this.state
-                        }}> <button className="landing_button" type="submit">Let's work out when... &rarr;</button>
+                        }}> <button className="landing_button" type="submit">Let's Find Time</button>
                 </Link>
             </section>
         </div>

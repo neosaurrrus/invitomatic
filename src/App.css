@@ -6,7 +6,7 @@
   --fadedWhite: rgba(224, 224, 224, 0.5);
   --semiTransparent: rgba(0, 0, 0, 0.1);
   --notVeryTransparent: rgba(0,0,0,0.3);
-  font-size: calc(10px + 2vmin);
+   font-size: calc(10px + 2vmin);
 }
 
 body{
@@ -15,7 +15,6 @@ background-image: linear-gradient(to bottom, #09203f 0%, #537895 100%);
 font-family: Arial, Helvetica, sans-serif;
 font-weight: 100;
 }
-
 section{
   margin: 50px;
 }
@@ -27,7 +26,6 @@ section{
   text-align: center;
   min-height: 100vh;
 }
-
 .App-header {
   background: var(--notVeryTransparent); 
   min-height: 300px;
@@ -36,8 +34,6 @@ section{
   align-items: center;
   justify-content: center;
 }
-
-
 .landing_section{
   font-size: 1.3rem;
 }
@@ -59,8 +55,13 @@ section{
   font-size: 1rem;
   padding: 10px;
   margin-right: 50px;
+  transition: all 0.5s
 }
-
+.landing_button:hover {
+  background: var(--offWhite);
+  color: var(--blackground);
+  transition: all 0.5s;
+}
 
 .app_inverseButton {
   background: var(--semiTransparent);
@@ -77,7 +78,6 @@ section{
   color: var(--blackground);
   transition: all 0.5s;
 }
-
 
 .calendar_calendarBox{
   color: var(--fadedWhite);

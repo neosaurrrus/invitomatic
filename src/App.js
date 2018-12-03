@@ -14,29 +14,22 @@ Input limits
 Clipboard thing.
 Change it to proper name
 Favicon
+Refactored somewhat
 
 * * CURRENT
 ------
 
-Refactoring 
-
-
-
-- New days object, I have no idea what this means
-- Put the two summary paths into a component each
-
-
-
-Overall formatting.
-
-- Add UI design small things, read guide.
-
+- Fix OUT bug in Yeah or NAH.
+- Fonts/Logo.
 
 * * FUTURE
 ------
 
+Accessibility Pass.
+Figure out API Key issue.
 Build!
 Host!
+Test
 */
 
 
@@ -44,11 +37,10 @@ import React, { Component } from 'react';
 import {Redirect} from 'react-router-dom';
 import Base from "./Base"
 import Calendar from './Calendar';
-import Responses from './Responses';
 import moment from 'moment'
 import './App.css';
 import NewEvent from './NewEvent';
-import CurrentEvent from './CurrentEvent';
+import ExistingEvent from './ExistingEvent';
 
 class App extends Component {
   state = {
@@ -97,7 +89,6 @@ class App extends Component {
       this.setState({loaded: true}, () => {console.log("loaded set to " + this.state.loaded.toString())})
   }
 
-
   checkValid(){ //Checks the state that is on the DB for this URL
     if (typeof this.state.event.days === "object") {
       console.info("Event already exists, skipping date creation")
@@ -108,7 +99,6 @@ class App extends Component {
     console.info("Valid Event, nothing to be done")
   }
   
-
   buildDates() { //builds the event object if empty
     let newEvent = this.state.event;
     newEvent.inviteID = this.props.match.params.inviteId
@@ -117,8 +107,8 @@ class App extends Component {
     newEvent.days = []
     newEvent.months = []
     newEvent.in = []
-    newEvent.out = []
-    newEvent.numberOfDays = 90;
+    newEvent.out = ["None"]
+    newEvent.numberOfDays = 92;
     newEvent.failed = false;
     // newEvent.out.push("None");
     newEvent.in.push(newEvent.author + "[creator]");
@@ -150,14 +140,12 @@ class App extends Component {
     newEvent.months = [...monthSet];
   };
 
-  
  toggleDoable = (index) => { //function to set a given day to doable or not
    let newEvent = this.state.event
    let newDays = newEvent.days
    newDays[index].doable=!newDays[index].doable;
    this.setState({event: newEvent})
  }
-
  userInput = (event) => {  //controls the name input
   let user = this.state.currentUser;
   user = event.target.value;
@@ -166,8 +154,9 @@ class App extends Component {
 
  checkUser = (user) => { //checks the name has responded before and removes it prior to setIn or setOut
    let newEvent = this.state.event;
+   console.log(this.state.event.out);
    newEvent.in = this.state.event.in.filter(inUser => inUser !== (", " + user));
-   if (this.state.event.in.length > 0) newEvent.out = this.state.event.out.filter(inUser => inUser !== (", " + user));
+   newEvent.out = this.state.event.out.filter(inUser => inUser !== (", " + user));
    this.setState({event: newEvent})
  }
 
@@ -196,10 +185,9 @@ copyURL = () => { //Puts the URL into the clipboard. Uses code I borrowed from s
   this.setState({event: newEvent})
   this.setState({currentUserChoice: "out"})
  }  
-
-
-  displayHeader = (event) => { //Shows the event summary if DB is loaded. Big dunction needs componentising.
-    if (Object.keys(event).length > 1 && typeof this.props.location.state === "undefined") {
+  displayHeader = (event) => { //Picks the right header depending if the event is new or not. Once it is loaded.
+    if (Object.keys(event).length > 1 && typeof this.props.location.state === "object") { //New Event
+      console.log("picking new event header")
        return (
        <NewEvent
           name={this.state.event.name}
@@ -214,9 +202,10 @@ copyURL = () => { //Puts the URL into the clipboard. Uses code I borrowed from s
         />
      ) 
     } 
-    if (Object.keys(event).length > 1 && typeof this.props.location.state === "object") {
+    if (Object.keys(event).length > 1 && typeof this.props.location.state === "undefined") { //existing event
+       console.log("picking existing event header")
        return (
-        <CurrentEvent
+        <ExistingEvent
           name={this.state.event.name}
           author={this.state.event.author}
           currentUser={this.state.currentUser}
@@ -230,7 +219,6 @@ copyURL = () => { //Puts the URL into the clipboard. Uses code I borrowed from s
      ) 
     } 
   }
-  
   displayCalendar = (choice) => { //Show the calendar, when 1. The user is In, 2. the event is loaded.
     if ((choice === "in" || typeof this.props.location.state === 'object') && Object.keys(this.state.event).length > 1 ) {
        return <Calendar 
@@ -244,7 +232,6 @@ copyURL = () => { //Puts the URL into the clipboard. Uses code I borrowed from s
           />
     } else if (choice === "out") {return <h3> Bummer, come back here if you change your mind</h3>}
   }
-
   render() {
       if (this.state.event.failed && !this.state.event.days && this.state.loaded && !this.props.location.state ) {
          return <Redirect to='/'/>;
