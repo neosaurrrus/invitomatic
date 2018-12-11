@@ -7,9 +7,17 @@ class Landing extends React.Component { //Component responsible for Event Creati
         author: "",
         name: "",
         duration: 90,
+        ready: false
     }
     updateAuthor = event => { //Updates the Author in State
-        let newAuthor = event.target.value;
+        let authorArray = Array.from(event.target.value);
+        let newAuthor = authorArray.map((letter,index) => {
+            if (index === 0 ){
+                return letter.toUpperCase()
+            }
+            else return letter;
+        }).join('');
+        
         this.setState({
             author: newAuthor
         })
@@ -35,6 +43,18 @@ class Landing extends React.Component { //Component responsible for Event Creati
         return newURL;
     }
 
+    showLink = () => {
+        if (this.state.author.length > 0 && this.state.name.length > 0){
+            return (
+            <Link to={{
+                pathname: `/i/${this.parseURL()}`,
+                state: this.state
+                }}> <button className="landing_button" type="submit">Lets Find Time</button>
+            </Link>
+           ) 
+        }
+    }
+
     render(){
         return (
         <div className="App">
@@ -44,17 +64,13 @@ class Landing extends React.Component { //Component responsible for Event Creati
             </header>
             <section className="landing_section">
                 <h4>What's your name?</h4>
-                <input className="landing_input" type= "text" maxlength="12" onChange={this.updateAuthor} value={this.state.author}/>
+                <input className="landing_input" type= "text" maxLength="12" onChange={this.updateAuthor} value={this.state.author}/>
                 <h4> What do you want to do with your friends? </h4>
-                <p className="small_text">e.g "play pool" or "go whitewater rafting"</p>
-                <input className="landing_input" type= "text" maxlength="25" onChange={this.updateName} value={this.state.name}/>
+                <p className="small_text">e.g "go whitewater rafting"</p>
+                <input className="landing_input" type= "text" maxLength="25" onChange={this.updateName} value={this.state.name}/>
                 <br/>
                 <br/>
-                <Link to={{
-                        pathname: `/i/${this.parseURL()}`,
-                        state: this.state
-                        }}> <button className="landing_button" type="submit">Lets Find Time</button>
-                </Link>
+                {this.showLink()}
             </section>
         </div>
         )
