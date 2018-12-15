@@ -68,10 +68,23 @@ h2{
   margin: 0px 30px;
   transition: all 0.5s
 }
+
 .landing_button:hover {
   background: var(--feature);
   transition: all 0.5s;
 }
+
+.transparent {
+  color: rgba(0, 0, 0, 0);
+  background: rgba(0, 0, 0, 0);
+  border: rgba(0, 0, 0, 0);
+}
+.transparent:hover {
+  color: rgba(0, 0, 0, 0);
+  background: rgba(0, 0, 0, 0);
+  border: rgba(0, 0, 0, 0);
+}
+
 
 .app_inverseButton {
   background: var(--semiTransparent);

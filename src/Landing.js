@@ -9,7 +9,11 @@ class Landing extends React.Component { //Component responsible for Event Creati
         duration: 90,
         ready: false
     }
+
+    buttonRef = React.createRef();
+
     updateAuthor = event => { //Updates the Author in State
+        this.showLink()
         let authorArray = Array.from(event.target.value);
         let newAuthor = authorArray.map((letter,index) => {
             if (index === 0 ){
@@ -23,6 +27,7 @@ class Landing extends React.Component { //Component responsible for Event Creati
         })
     }
     updateName = event => { //Updates the event name in State
+        this.showLink()
         let newName = event.target.value;
         this.setState({
             name: newName
@@ -44,17 +49,14 @@ class Landing extends React.Component { //Component responsible for Event Creati
     }
 
     showLink = () => {
-        if (this.state.author.length > 0 && this.state.name.length > 0){
-            return (
-            <Link to={{
-                pathname: `/i/${this.parseURL()}`,
-                state: this.state
-                }}> <button className="landing_button" type="submit">Lets Find Time</button>
-            </Link>
-           ) 
-        }
+        if (this.state.author.length > 1 && this.state.name.length > 1){
+               this.buttonRef.current.classList.remove("transparent")
+           } 
+        if (this.state.author.length < 2 || this.state.name.length < 2){
+            this.buttonRef.current.classList.add("transparent")
+        } 
     }
-
+    
     render(){
         return (
         <div className="App">
@@ -70,7 +72,11 @@ class Landing extends React.Component { //Component responsible for Event Creati
                 <input className="landing_input" type= "text" maxLength="25" onChange={this.updateName} value={this.state.name}/>
                 <br/>
                 <br/>
-                {this.showLink()}
+                <Link to={{
+                pathname: `/i/${this.parseURL()}`,
+                state: this.state
+                }}> <button className="landing_button transparent" ref={this.buttonRef} type="submit">Lets Find Time</button>
+                </Link>
             </section>
         </div>
         )
