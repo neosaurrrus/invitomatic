@@ -1,4 +1,4 @@
-# Invitely - A simple real-time event scheduling App
+# Invite.li - A simple real-time event scheduling App
 
 [Use it here](Http://invite.li)
 
